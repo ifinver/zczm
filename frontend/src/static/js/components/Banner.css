@@ -26,8 +26,8 @@
   
   .banner-text {
     position: absolute;
+    background: linear-gradient(45deg, black, transparent);
     bottom: 20px;
-    left: 20px;
     color: white;
     font-size: 24px;
     font-weight: bold;

@@ -10,7 +10,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 
 const Banner: React.FC = () => {
   const banners = [
-    { text: '为什么会有人类', image: '/media/original/thumbnails/user/admin/0b70b9c8c8c44328ad20b455fb139980.id13923391ChineseETtopbanner.png_MUt9W9b.jpg' },
+    { text: '', image: '/media/original/thumbnails/user/admin/0b70b9c8c8c44328ad20b455fb139980.id13923391ChineseETtopbanner.png_MUt9W9b.jpg' },
     { text: '点击观看《沉默呼声》', image: '/media/original/thumbnails/user/admin/a546d228146c45589a73f694f887e12f.photo_20240720_204507.jpg_qfdkPE2.jpg' },
     { text: '不为人知的马克思', image: '/media/original/thumbnails/user/admin/94d7a2a4c4c04097a4e6a53cc2ce6c24.images.jpg_d4NxPZz.jpg' },
   ];
@@ -18,7 +18,7 @@ const Banner: React.FC = () => {
   return (
     <div className="banner-container">
       <Swiper
-        modules={[Autoplay, Pagination]} // 使用 Autoplay 和 Pagination 模块
+        modules={[ Pagination]} // 使用 Autoplay 和 Pagination 模块
         autoplay={{ delay: 3000 }}
         loop={true}
         pagination={{ clickable: true }}
