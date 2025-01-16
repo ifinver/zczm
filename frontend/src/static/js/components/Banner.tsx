@@ -18,7 +18,7 @@ const Banner: React.FC = () => {
   return (
     <div className="banner-container">
       <Swiper
-        modules={[ Pagination]} // 使用 Autoplay 和 Pagination 模块
+        modules={[Autoplay, Pagination]} // 使用 Autoplay 和 Pagination 模块
         autoplay={{ delay: 3000 }}
         loop={true}
         pagination={{ clickable: true }}
