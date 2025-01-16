@@ -7,13 +7,14 @@ import { ItemListAsync } from '../components/item-list/ItemListAsync.jsx';
 import { InlineSliderItemListAsync } from '../components/item-list/InlineSliderItemListAsync.jsx';
 import { Page } from './Page';
 import { translateString } from '../utils/helpers/';
+import Banner from '../components/Banner';
 
 const EmptyMedia: React.FC = ({}) => {
   return (
     <LinksConsumer>
       {(links) => (
         <div className="empty-media">
-          <div className="welcome-title">Welcome to MediaCMS!</div>
+          <div className="welcome-title">Welcome to ZCZM!</div>
           <div className="start-uploading">Start uploading media and sharing your work!</div>
           <a href={links.user.addMedia} title="Upload media" className="button-link">
             <i className="material-icons" data-icon="video_call"></i>UPLOAD MEDIA
@@ -66,6 +67,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <Page id={id}>
+
+      <Banner />
+
       <LinksConsumer>
         {(links) => (
           <ApiUrlConsumer>
