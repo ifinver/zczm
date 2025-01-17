@@ -22,7 +22,8 @@ Open in browser: [http://localhost:8088](http://localhost:8088)
 
 ### **Build**
 
-    npm run dist
+    $env:NODE_OPTIONS="--openssl-legacy-provider"; npm run dist
+
 
 Generates the folder "**_frontend/dist_**".
 
