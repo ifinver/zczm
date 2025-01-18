@@ -1,0 +1,18 @@
+[
+    {
+      "title": "Google",
+      "icon": "https://www.google.com/favicon.ico",
+      "url": "https://www.google.com"
+    },
+    {
+      "title": "YouTube",
+      "icon": "https://www.youtube.com/favicon.ico",
+      "url": "https://www.youtube.com"
+    },
+    {
+      "title": "GitHub",
+      "icon": "https://github.githubassets.com/favicons/favicon.svg",
+      "url": "https://github.com"
+    }
+  ]
+  

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ApiUrlConsumer, LinksConsumer } from '../utils/contexts/';
 import { PageStore } from '../utils/stores/';
 import { MediaListRow } from '../components/MediaListRow';
@@ -8,13 +8,19 @@ import { InlineSliderItemListAsync } from '../components/item-list/InlineSliderI
 import { Page } from './Page';
 import { translateString } from '../utils/helpers/';
 import Banner from '../components/Banner';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/autoplay';
+import './nav.css';
+import { Autoplay, Navigation } from 'swiper/modules';
 
 const EmptyMedia: React.FC = ({}) => {
   return (
     <LinksConsumer>
       {(links) => (
         <div className="empty-media">
-          <div className="welcome-title">Welcome to ZCZM!</div>
+          <div className="welcome-title">Welcome to 眾創之門!</div>
           <div className="start-uploading">Start uploading media and sharing your work!</div>
           <a href={links.user.addMedia} title="Upload media" className="button-link">
             <i className="material-icons" data-icon="video_call"></i>UPLOAD MEDIA
@@ -51,6 +57,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [visibleLatest, setVisibleLatest] = useState(false);
   const [visibleFeatured, setVisibleFeatured] = useState(false);
   const [visibleRecommended, setVisibleRecommended] = useState(false);
+  const [navItems, setNavItems] = useState<{ title: string; icon: string; url: string }[]>([]);
 
   const onLoadLatest = (length: number) => {
     setVisibleLatest(0 < length);
@@ -65,10 +72,63 @@ export const HomePage: React.FC<HomePageProps> = ({
     setVisibleRecommended(0 < length);
   };
 
+  // Fetch navigation data
+  useEffect(() => {
+    fetch('/static/nav.json')
+      .then((response) => response.json())
+      .then((data) => setNavItems(data));
+  }, []);
+
   return (
     <Page id={id}>
 
       <Banner />
+      {navItems.length > 0 && (
+        <div id="navbar-container">
+          <button id="scroll-button-left" aria-label="Scroll Left">
+            &lt;
+          </button>
+          <button id="scroll-button-right" aria-label="Scroll Right">
+            &gt;
+          </button>
+          <Swiper
+            modules={[Navigation, Autoplay]}
+            loop={true} // Enable infinite loop
+            navigation={{
+              nextEl: '#scroll-button-right',
+              prevEl: '#scroll-button-left',
+            }} // Configure navigation buttons
+            autoplay={{
+              delay: 2000, // Automatic slide every 3 seconds
+              disableOnInteraction: false, // Pause autoplay on interaction
+            }}
+            slidesPerView="auto" // Dynamically calculate visible slides
+            slidesPerGroup={1} 
+            spaceBetween={20} // Space between slides
+            breakpoints={{
+              200: { slidesPerView: 1 },
+              470: { slidesPerView: 2},
+              560: { slidesPerView: 3},
+              650: { slidesPerView: 4 },
+              740: { slidesPerView: 5 },
+              830: { slidesPerView: 6 },
+              920: { slidesPerView: 7 },
+              1010: { slidesPerView: 8 },
+            }} // Responsive breakpoints
+          >
+            {navItems.map((item, index) => (
+              <SwiperSlide key={index} style={{ width: 'auto' }}>
+                <div className="nav-item">
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    <img src={item.icon} alt={item.title} />
+                    <p>{item.title}</p>
+                  </a>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      )}
 
       <LinksConsumer>
         {(links) => (

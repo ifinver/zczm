@@ -1,0 +1,97 @@
+/* 导航栏容器样式 */
+#navbar-container {
+    position: relative;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-right: 40px;
+    margin-left: 40px;
+  }
+  
+  /* Swiper 滑块内容样式 */
+  .swiper {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .swiper-slide {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .nav-item {
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .nav-item img {
+    width: 69px;
+    height: 69px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-item img:hover {
+    transform: scale(1.1);
+  }
+  
+  .nav-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+  }
+  
+  /* 滚动按钮样式 */
+  #scroll-button-left{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10;
+    opacity: 0.8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    margin-left: 10px;
+  }
+  #scroll-button-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10;
+    opacity: 0.8;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    margin-right: 10px;
+  }
+  
+  #scroll-button-left:hover,
+  #scroll-button-right:hover {
+    opacity: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  #scroll-button-left {
+    left: 10px;
+  }
+  
+  #scroll-button-right {
+    right: 10px;
+  }
+  
