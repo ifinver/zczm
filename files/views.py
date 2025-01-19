@@ -1210,7 +1210,6 @@ class CommentList(APIView):
         serializer = CommentSerializer(page, many=True, context={"request": request})
         return paginator.get_paginated_response(serializer.data)
 
-
 class CommentDetail(APIView):
     """Comments related views
     Listings of comments for a media (GET)
@@ -1307,7 +1306,6 @@ class CommentDetail(APIView):
                 check_comment_for_mention(friendly_token=media.friendly_token, comment_text=serializer.data['text'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserActions(APIView):
     parser_classes = (JSONParser,)

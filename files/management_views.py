@@ -1,3 +1,5 @@
+import json
+import os
 from drf_yasg import openapi as openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -174,6 +176,69 @@ class CommentList(APIView):
             comments = comment_ids.split(",")
             Comment.objects.filter(uid__in=comments).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class NavDetail(APIView):
+    """Comments listings
+    Used on management pages of MediaCMS
+    Should be available only to MediaCMS editors,
+    managers and admins
+    """
+
+    permission_classes = (IsMediacmsEditor,)
+    parser_classes = (JSONParser,)
+
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Manage'],
+        operation_summary='Manage nav.json',
+        operation_description='Manage nav.json',
+    )
+    def get(self, request, format=None):
+        
+        file_path = os.path.join(os.path.dirname(__file__), "../static/nav.json")
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                detail = json.load(f)
+        except FileNotFoundError:
+            detail = ""  # 如果文件不存在，返回空字符串
+        except json.JSONDecodeError:
+            return Response(
+                {"msg": "nav.json文件格式不正确"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        return Response(
+            {"detail": detail},
+            status=status.HTTP_200_OK,
+        )
+    
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="detail", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="nav.json detail"),
+        ],
+        tags=['Manage'],
+        operation_summary='update nav.json',
+        operation_description='ate nav.json',
+    )
+    def post(self, request, format=None):
+        detail = request.data.get("detail")
+        # 判断 detail 是否是合法的 JSON
+        try:
+            parsed_detail = json.loads(detail)  # 尝试解析 detail 为 JSON
+            
+            file_path = os.path.join(os.path.dirname(__file__), "../static/nav.json")
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(parsed_detail, f, ensure_ascii=False, indent=4)
+            return Response(
+                {"msg": "ok"},
+                status=status.HTTP_200_OK,
+            )
+        except (ValueError, TypeError):
+            return Response(
+                {"msg": "json格式不正确"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
 
 
 class UserList(APIView):
