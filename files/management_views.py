@@ -227,6 +227,10 @@ class NavDetail(APIView):
             parsed_detail = json.loads(detail)  # 尝试解析 detail 为 JSON
             
             file_path = os.path.join(os.path.dirname(__file__), "../static/nav.json")
+            return Response(
+                {"msg": file_path},
+                status=status.HTTP_200_OK,
+            )
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(parsed_detail, f, ensure_ascii=False, indent=4)
             return Response(
@@ -237,6 +241,11 @@ class NavDetail(APIView):
             return Response(
                 {"msg": "json格式不正确"},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return Response(
+                {"msg": "服务器内部错误", "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         
 
