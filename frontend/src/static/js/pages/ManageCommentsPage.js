@@ -11,25 +11,16 @@ export class ManageCommentsPage extends Page {
     super(props, 'manage-comments');
 
     this.state = {
-      modifiedContent: {}, // 用于存储修改后的内容
+      modifiedContent: [], 
     };
 
     this.requestUrl = '/api/v1/manage_nav';
   }
 
   componentDidMount() {
-    // 在页面加载时通过 getRequest 获取内容
-    getRequest(this.requestUrl)
-      .then((response) => {
-        if (response && response.detail) {
-          this.setState({ modifiedContent: response.detail });
-        } else {
-          PageActions.addNotification('未能加载站点配置.', '错误');
-        }
-      })
-      .catch(() => {
-        PageActions.addNotification('加载站点配置时出错.', '错误');
-      });
+    fetch('/static/nav.json')
+      .then((response) => response.json())
+      .then((data) => this.setState({ modifiedContent: data }));
   }
 
   handleModify = () => {
@@ -49,7 +40,7 @@ export class ManageCommentsPage extends Page {
   };
 
   handleJsonChange = (edit) => {
-    this.setState({ modifiedContent: edit.updated_src });
+    this.setState({ modifiedContent:edit.updated_src });
   };
 
   pageContent() {
@@ -61,14 +52,36 @@ export class ManageCommentsPage extends Page {
         <br/><br/>
         <h3>管理導航欄</h3>
         <ReactJson
-          src={modifiedContent}
+          src={modifiedContent || {}}
           onEdit={this.handleJsonChange}
           onAdd={this.handleJsonChange}
           onDelete={this.handleJsonChange}
-          style={{ padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}
+          style={{
+            padding: '20px',
+            backgroundColor: '#1e1e1e', // 设置深色背景
+            borderRadius: '8px',
+            color: '#ffffff', // 默认字体颜色
+          }}
           displayDataTypes={false}
           displayObjectSize={false}
-          theme="monokai"
+          theme={{
+            base00: "#1e1e1e", // 背景色
+            base01: "#282c34", // 辅助背景色
+            base02: "#2c313c", // 突出背景
+            base03: "#d4d4d4", // 边框色
+            base04: "#d4d4d4", // 数字颜色
+            base05: "#ffffff", // 默认字体颜色
+            base06: "#ffffff", // 标题颜色
+            base07: "#ffffff", // 键的颜色
+            base08: "#569cd6", // 关键字颜色
+            base09: "#dcdcaa", // 数值颜色
+            base0A: "#c586c0", // 函数名颜色
+            base0B: "#6a9955", // 字符串颜色
+            base0C: "#9cdcfe", // URL 颜色
+            base0D: "#4ec9b0", // 对象名颜色
+            base0E: "#c586c0", // 类名颜色
+            base0F: "#d16969", // 错误颜色
+          }}
         />
         <button onClick={this.handleModify} style={{ marginTop: '20px', padding: '10px 20px' }}>
           保存修改
