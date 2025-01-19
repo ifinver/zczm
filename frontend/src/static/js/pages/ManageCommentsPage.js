@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactJson from 'react-json-view'; // 用于美观的 JSON 编辑
-import { ApiUrlContext } from '../utils/contexts/';
 import { PageActions } from '../utils/actions/';
-import { getRequest, postRequest } from '../utils/helpers';
+import { csrfToken,postRequest } from '../utils/helpers';
 import { Page } from './_Page';
 
 export class ManageCommentsPage extends Page {
@@ -26,12 +25,24 @@ export class ManageCommentsPage extends Page {
   handleModify = () => {
     const { modifiedContent } = this.state;
 
-    postRequest(this.requestUrl, { detail: JSON.stringify(modifiedContent) })
+    postRequest(this.requestUrl, 
+      { detail: JSON.stringify(modifiedContent) },
+      {
+        headers: {
+          'X-CSRFToken': csrfToken(),
+        },
+      },
+    )
       .then((response) => {
         if (response && response.msg === 'ok') {
           PageActions.addNotification('站点配置修改成功.', '提示');
         } else {
-          PageActions.addNotification('站点配置修改失败.', '错误');
+          if(response && response.msg){
+            PageActions.addNotification(response.msg, '出錯了');
+          }else{
+            PageActions.addNotification('站点配置修改失败.', '出錯了');
+          }
+          
         }
       })
       .catch(() => {
