@@ -27,7 +27,7 @@ translation_strings = {
     "Language": "语言",
     "Latest": "最新",
     "Liked media": "喜欢的媒体",
-    "Manage comments": "管理评论",
+    "Manage comments": "管理站点",
     "Manage media": "管理媒体",
     "Manage users": "管理用户",
     "Media": "媒体",

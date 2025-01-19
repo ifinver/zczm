@@ -247,7 +247,7 @@ export function SidebarNavigationMenu() {
       items.push({
         link: links.manage.comments,
         icon: 'miscellaneous_services',
-        text: translateString("Manage comments"),
+        text: '管理站点',
         className: 'nav-item-manage-comments',
       });
     }
