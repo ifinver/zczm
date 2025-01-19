@@ -2,15 +2,14 @@
 #navbar-container {
     position: relative;
     background-color: #f8f9fa;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    padding: 10px;
     overflow: hidden;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    padding-right: 40px;
-    padding-left: 40px;
-    margin-right: 40px;
-    margin-left: 40px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   
   /* Swiper 滑块内容样式 */
@@ -41,12 +40,20 @@
   .nav-item img:hover {
     transform: scale(1.1);
   }
+
+  .nav-item a, a:visited, a:hover, a:active, a:focus {
+    text-decoration: none; /* 去掉下划线 */
+    outline: none; /* 移除聚焦时的默认轮廓 */
+    border: none; /* 去掉边框 */
+  }
   
-  .nav-item p {
+  .nav-item a p {
     margin: 0;
     font-size: 14px;
     color: #666;
     text-decoration: none;
+    outline: none; /* 去掉聚焦状态的边框 */
+    border: none; /* 去掉边框 */
   }
   
   /* 滚动按钮样式 */

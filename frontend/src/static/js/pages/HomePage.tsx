@@ -85,36 +85,16 @@ export const HomePage: React.FC<HomePageProps> = ({
       <Banner />
       {navItems.length > 0 && (
         <div id="navbar-container">
-          <button id="scroll-button-left" aria-label="Scroll Left">
-            &lt;
-          </button>
-          <button id="scroll-button-right" aria-label="Scroll Right">
-            &gt;
-          </button>
           <Swiper
             modules={[Navigation, Autoplay]}
             loop={true} // Enable infinite loop
-            navigation={{
-              nextEl: '#scroll-button-right',
-              prevEl: '#scroll-button-left',
-            }} // Configure navigation buttons
             autoplay={{
-              delay: 2000, // Automatic slide every 3 seconds
+              delay: 3000, // Automatic slide every 3 seconds
               disableOnInteraction: false, // Pause autoplay on interaction
             }}
             slidesPerView="auto" // Dynamically calculate visible slides
             slidesPerGroup={1} 
-            spaceBetween={20} // Space between slides
-            breakpoints={{
-              200: { slidesPerView: 1 },
-              470: { slidesPerView: 2},
-              560: { slidesPerView: 3},
-              650: { slidesPerView: 4 },
-              740: { slidesPerView: 5 },
-              830: { slidesPerView: 6 },
-              920: { slidesPerView: 7 },
-              1010: { slidesPerView: 8 },
-            }} // Responsive breakpoints
+            spaceBetween={69} // Space between slides
           >
             {navItems.map((item, index) => (
               <SwiperSlide key={index} style={{ width: 'auto' }}>
