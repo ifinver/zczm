@@ -14,8 +14,7 @@ export class ManageCommentsPage extends Page {
       modifiedContent: {}, // 用于存储修改后的内容
     };
 
-    this.requestUrl = '/api/v1/getNavJson';
-    this.setUrl = '/api/v1/postNavJson';
+    this.requestUrl = '/api/v1/manage_nav';
   }
 
   componentDidMount() {
@@ -36,7 +35,7 @@ export class ManageCommentsPage extends Page {
   handleModify = () => {
     const { modifiedContent } = this.state;
 
-    postRequest(this.setUrl, { detail: JSON.stringify(modifiedContent) })
+    postRequest(this.requestUrl, { detail: JSON.stringify(modifiedContent) })
       .then((response) => {
         if (response && response.msg === 'ok') {
           PageActions.addNotification('站点配置修改成功.', '提示');
