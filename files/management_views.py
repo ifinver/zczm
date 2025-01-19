@@ -227,6 +227,7 @@ class NavDetail(APIView):
             parsed_detail = json.loads(detail)  # 尝试解析 detail 为 JSON
             
             file_path = os.path.join(os.path.dirname(__file__), "../static/nav.json")
+            file_path = os.path.normpath(file_path)
             return Response(
                 {"msg": file_path},
                 status=status.HTTP_200_OK,
