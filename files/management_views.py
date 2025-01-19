@@ -228,10 +228,6 @@ class NavDetail(APIView):
             
             file_path = os.path.join(os.path.dirname(__file__), "../static/nav.json")
             file_path = os.path.normpath(file_path)
-            return Response(
-                {"msg": file_path},
-                status=status.HTTP_200_OK,
-            )
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(parsed_detail, f, ensure_ascii=False, indent=4)
             return Response(
