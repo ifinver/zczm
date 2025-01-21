@@ -1,13 +1,16 @@
 <div id="app-header"></div>
 <div id="app-sidebar"></div>
 <div class="page-main-wrap">
+  <head>
+    <script src="/static/ckeditor/ckeditor.js"></script>
+  </head>
   <div class="page-main">
     <div class="page-main-inner">
       <div class="user-action-form-wrap">
         <div class="user-action-form-inner">
           <h1>Edit Media</h1>
-
           <form enctype="multipart/form-data" action="" method="post" class="post-form">
+            {% csrf_token %}
             <div id="div_id_title" class="control-group">
               <label for="id_title" class="control-label"> Title </label>
               <div class="controls">
@@ -125,7 +128,20 @@
                 <p id="hint_id_allow_download" class="help-block">Whether option to download media is shown</p>
               </div>
             </div>
-
+            <script src="/static/ckeditor/ckeditor.js"></script>
+            <script>
+              // 初始化 CKEditor
+              CKEDITOR.replace('id_description', {
+                toolbar: [
+                  { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                  { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                  { name: 'links', items: ['Link', 'Unlink'] },
+                  { name: 'tools', items: ['Maximize'] },
+                ],
+                height: 300, // 编辑器高度
+                width: '100%', // 编辑器宽度
+              });
+            </script>
             <button class="primaryAction" type="submit">Update Media</button>
           </form>
         </div>
