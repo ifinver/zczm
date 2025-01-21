@@ -20,14 +20,14 @@ export function init(home, search, media, profile, VALID_PAGES) {
     },
     media: {
       categoriesWithTitle: false,
-      htmlInDescription: false,
+      htmlInDescription: true,
       displayViews: true,
       related: {
         initialSize: 10,
       },
     },
     profile: {
-      htmlInDescription: false,
+      htmlInDescription: true,
       includeHistory: false,
       includeLikedMedia: false,
     },

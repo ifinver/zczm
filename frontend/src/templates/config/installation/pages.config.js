@@ -11,14 +11,14 @@ module.exports = {
   },
   media: {
     categoriesWithTitle: false,
-    htmlInDescription: false,
+    htmlInDescription: true,
     hideViews: false,
     related: {
       initialSize: 15,
     },
   },
   profile: {
-    htmlInDescription: false,
+    htmlInDescription: true,
     includeHistory: false,
     includeLikedMedia: false,
   },
