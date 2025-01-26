@@ -178,10 +178,7 @@ class CommentList(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class NavDetail(APIView):
-    """Comments listings
-    Used on management pages of MediaCMS
-    Should be available only to MediaCMS editors,
-    managers and admins
+    """管理导航
     """
 
     permission_classes = (IsMediacmsEditor,)
@@ -245,7 +242,33 @@ class NavDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         
+class SubmitSantui(APIView):
+    """提交三退
+    """
 
+    parser_classes = (JSONParser,)
+    
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="name", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="三退者名称"),
+            openapi.Parameter(name="content", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="申请内容"),
+            openapi.Parameter(name="note", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="备注"),
+        ],
+        tags=['Manage'],
+        operation_summary='Apply Santui',
+        operation_description='提交三退申请',
+    )
+    def post(self, request, format=None):
+        name = request.data.get("name")
+        content = request.data.get("content")
+        note = request.data.get("note")
+        # 存入数据库中
+        
+        #存入成功后，返回ok
+        return Response(
+                {"msg": "ok"},
+                status=status.HTTP_200_OK,
+            )
 
 class UserList(APIView):
     """Users listings
