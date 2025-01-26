@@ -282,6 +282,41 @@ class SubmitSantui(APIView):
                 {"msg": "数据库写入失败", "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Manage'],
+        operation_summary='Get all Santui applications',
+        operation_description='获取所有三退申请，未完成的排在上面，已完成的排在下面；第二排序条件是按申请时间先后排序',
+    )
+    def get(self, request, format=None):
+        """处理 GET 请求，返回排序后的所有数据"""
+        try:
+            # 查询并排序数据
+            santui_list = SantuiApplication.objects.all().order_by(
+                'is_completed',  # 未完成排在上面
+                'created_at'     # 申请时间早的排在上面
+            )
+            # 格式化数据
+            data = [
+                {
+                    "id": app.id,
+                    "name": app.name,
+                    "content": app.content,
+                    "note": app.note,
+                    "is_completed": app.is_completed,
+                    "completed_at": app.completed_at,
+                    "created_at": app.created_at,
+                }
+                for app in santui_list
+            ]
+            return Response({"data": data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"msg": "获取数据失败", "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class UserList(APIView):
     """Users listings
