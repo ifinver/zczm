@@ -54,6 +54,7 @@ from .models import (
     Media,
     Playlist,
     PlaylistMedia,
+    SantuiApplication,
     Tag,
 )
 from .serializers import (
@@ -461,6 +462,79 @@ class MediaList(APIView):
             serializer.save(user=request.user, media_file=media_file)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SantuiSubmit(APIView):
+    """提交三退申请"""
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrEditor)
+    parser_classes = (JSONParser,)
+    
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(name="name", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="三退者名称"),
+            openapi.Parameter(name="content", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="申请内容"),
+            openapi.Parameter(name="note", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="备注"),
+        ],
+        tags=['Manage'],
+        operation_summary='Apply Santui',
+        operation_description='提交三退申请',
+    )
+    def post(self, request, format=None):
+        name = request.data.get("name")
+        content = request.data.get("content")
+        note = request.data.get("note")
+        # 存入数据库中
+        if not name or not content:
+            return Response({"msg": "名称和内容不能为空"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 存入数据库
+            SantuiApplication.objects.create(
+                name=name,
+                content=content,
+                note=note
+            )
+            return Response({"msg": "ok"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"msg": "数据库写入失败", "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Manage'],
+        operation_summary='Get all Santui applications',
+        operation_description='获取所有三退申请，未完成的排在上面，已完成的排在下面；第二排序条件是按申请时间先后排序',
+    )
+    def get(self, request, format=None):
+        """处理 GET 请求，返回排序后的所有数据"""
+        try:
+            # 查询并排序数据
+            santui_list = SantuiApplication.objects.all().order_by(
+                'is_completed',  # 未完成排在上面
+                'created_at'     # 申请时间早的排在上面
+            )
+            # 格式化数据
+            data = [
+                {
+                    "id": app.id,
+                    "name": app.name,
+                    "content": app.content,
+                    "note": app.note,
+                    "is_completed": app.is_completed,
+                    "completed_at": app.completed_at,
+                    "created_at": app.created_at,
+                }
+                for app in santui_list
+            ]
+            return Response({"data": data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"msg": "获取数据失败", "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class MediaDetail(APIView):

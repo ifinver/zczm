@@ -245,47 +245,12 @@ class NavDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         
-@method_decorator(csrf_exempt, name="dispatch")
-class SubmitSantui(APIView):
-    """提交三退"""
+class Santui(APIView):
+    """查看和操作三退申请"""
 
-    permission_classes = (AllowAny,)
+    permission_classes = (IsMediacmsEditor,)
     parser_classes = (JSONParser,)
     
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(name="name", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="三退者名称"),
-            openapi.Parameter(name="content", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="申请内容"),
-            openapi.Parameter(name="note", in_=openapi.IN_FORM, type=openapi.TYPE_STRING, required=True, description="备注"),
-        ],
-        tags=['Manage'],
-        operation_summary='Apply Santui',
-        operation_description='提交三退申请',
-    )
-    @csrf_exempt
-    def post(self, request, format=None):
-        name = request.data.get("name")
-        content = request.data.get("content")
-        note = request.data.get("note")
-        # 存入数据库中
-        if not name or not content:
-            return Response({"msg": "名称和内容不能为空"}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            # 存入数据库
-            SantuiApplication.objects.create(
-                name=name,
-                content=content,
-                note=note
-            )
-            return Response({"msg": "ok"}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response(
-                {"msg": "数据库写入失败", "error": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-        
-
     @swagger_auto_schema(
         manual_parameters=[],
         tags=['Manage'],
@@ -319,11 +284,6 @@ class SubmitSantui(APIView):
                 {"msg": "获取数据失败", "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-class MarkAsCompleted(APIView):
-    """标记三退申请为已完成"""
-
-    permission_classes = (IsMediacmsEditor,)  # 仅允许具有编辑权限的用户操作
 
     @swagger_auto_schema(
         manual_parameters=[
