@@ -2,7 +2,6 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.urls import path, re_path
-from django.views.decorators.csrf import csrf_exempt
 
 from . import management_views, views
 from .feeds import IndexRSSFeed, SearchRSSFeed
@@ -44,7 +43,7 @@ urlpatterns = [
     re_path(r"^view", views.view_media, name="get_media"),
     re_path(r"^upload", views.upload_media, name="upload_media"),
     # API VIEWS
-    re_path(r"^api/v1/santui_submit$", csrf_exempt(views.SantuiSubmit.as_view()),name='santui_submit'),
+    re_path(r"^api/v1/santui_submit$", views.SantuiSubmit.as_view(),name='santui_submit'),
     re_path(r"^api/v1/media$", views.MediaList.as_view()),
     re_path(r"^api/v1/media/$", views.MediaList.as_view()),
     re_path(
