@@ -3,10 +3,8 @@ import { SiteContext } from '../../utils/contexts/';
 import { useUser, usePopup } from '../../utils/hooks/';
 import { PageStore, MediaPageStore } from '../../utils/stores/';
 import { PageActions, MediaPageActions } from '../../utils/actions/';
-import { formatInnerLink, publishedOnDate } from '../../utils/helpers/';
+import { formatInnerLink } from '../../utils/helpers/';
 import { PopupMain } from '../_shared/';
-import CommentsList from '../comments/Comments';
-import { replaceString } from '../../utils/helpers/';
 import { translateString } from '../../utils/helpers/';
 
 function metafield(arr) {
@@ -33,29 +31,29 @@ function metafield(arr) {
   return ret;
 }
 
-function MediaAuthorBanner(props) {
-  return (
-    <div className="media-author-banner">
-      <div>
-        <a className="author-banner-thumb" href={props.link || null} title={props.name}>
-          <span style={{ backgroundImage: 'url(' + props.thumb + ')' }}>
-            <img src={props.thumb} loading="lazy" alt={props.name} title={props.name} />
-          </span>
-        </a>
-      </div>
-      <div>
-        <span>
-          <a href={props.link} className="author-banner-name" title={props.name}>
-            <span>{props.name}</span>
-          </a>
-        </span>
-        {PageStore.get('config-media-item').displayPublishDate && props.published ? (
-          <span className="author-banner-date">{translateString("Published on")} {replaceString(publishedOnDate(new Date(props.published)))}</span>
-        ) : null}
-      </div>
-    </div>
-  );
-}
+// function MediaAuthorBanner(props) {
+//   return (
+//     <div className="media-author-banner">
+//       <div>
+//         <a className="author-banner-thumb" href={props.link || null} title={props.name}>
+//           <span style={{ backgroundImage: 'url(' + props.thumb + ')' }}>
+//             <img src={props.thumb} loading="lazy" alt={props.name} title={props.name} />
+//           </span>
+//         </a>
+//       </div>
+//       <div>
+//         <span>
+//           <a href={props.link} className="author-banner-name" title={props.name}>
+//             <span>{props.name}</span>
+//           </a>
+//         </span>
+//         {PageStore.get('config-media-item').displayPublishDate && props.published ? (
+//           <span className="author-banner-date">{translateString("Published on")} {replaceString(publishedOnDate(new Date(props.published)))}</span>
+//         ) : null}
+//       </div>
+//     </div>
+//   );
+// }
 
 function MediaMetaField(props) {
   return (
@@ -175,11 +173,11 @@ export default function ViewerInfoContent(props) {
 
   return (
     <div className="media-info-content">
-      {void 0 === PageStore.get('config-media-item').displayAuthor ||
+      {/* {void 0 === PageStore.get('config-media-item').displayAuthor ||
       null === PageStore.get('config-media-item').displayAuthor ||
       !!PageStore.get('config-media-item').displayAuthor ? (
         <MediaAuthorBanner link={authorLink} thumb={authorThumb} name={props.author.name} published={props.published} />
-      ) : null}
+      ) : null} */}
 
       <div className="media-content-banner">
         <div className="media-content-banner-inner">
@@ -242,7 +240,7 @@ export default function ViewerInfoContent(props) {
         </div>
       </div>
 
-      <CommentsList />
+      {/* <CommentsList /> */}
     </div>
   );
 }
