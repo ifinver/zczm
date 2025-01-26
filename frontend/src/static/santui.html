@@ -619,13 +619,13 @@
             <!-- Form -->
             <form class="form" id="retirementForm">
                 <label for="name">三退者名称（可任意化名）</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" required placeholder="例：德福、川普、叶凡">
 
                 <label for="application">申请内容</label>
-                <input type="text" id="application" name="application" required>
+                <textarea type="text" id="application" rows="3" name="application" required placeholder="例：德福退少先队。川普退共青团和共产党。叶凡三种组织都退。加入过什么退什么即可。">
 
                 <label for="remarks">留言备注（选填）</label>
-                <textarea id="remarks" name="remarks" rows="3"></textarea>
+                <input id="remarks" name="remarks" placeholder="任何想说的话，内容不限（选填）"></textarea>
 
                 <button type="button" onclick="submitForm()">提交申请</button>
                 <div id="error-message" class="error"></div>
@@ -694,8 +694,15 @@
                 // 检查响应状态
                 if (response.ok) {
                     const result = await response.json();
-                    alert("申请已提交！感谢您的参与。");
+                    errorMessage.textContent = `成功！申请已提交！`;
                     console.log("服务器返回结果：", result);
+
+                    // 清空输入框
+                    document.getElementById('name').value = "";
+                    document.getElementById('application').value = "";
+                    if (document.getElementById('remarks')) {
+                        document.getElementById('remarks').value = "";
+                    }
                 } else {
                     const error = await response.text();
                     errorMessage.textContent = `提交失败：${error}`;
