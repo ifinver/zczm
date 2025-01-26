@@ -12,7 +12,7 @@ from users.models import User
 from users.serializers import UserSerializer
 
 from .methods import is_mediacms_manager
-from .models import Comment, Media
+from .models import Comment, Media, SantuiApplication
 from .permissions import IsMediacmsEditor
 from .serializers import CommentSerializer, MediaSerializer
 
@@ -263,11 +263,21 @@ class SubmitSantui(APIView):
         content = request.data.get("content")
         note = request.data.get("note")
         # 存入数据库中
-        
-        #存入成功后，返回ok
-        return Response(
-                {"msg": "ok"},
-                status=status.HTTP_200_OK,
+        if not name or not content:
+            return Response({"msg": "名称和内容不能为空"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 存入数据库
+            SantuiApplication.objects.create(
+                name=name,
+                content=content,
+                note=note
+            )
+            return Response({"msg": "ok"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"msg": "数据库写入失败", "error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 class UserList(APIView):

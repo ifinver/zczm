@@ -114,6 +114,25 @@ def category_thumb_path(instance, filename):
     file_name = "{0}.{1}".format(instance.uid.hex, helpers.get_file_name(filename))
     return settings.MEDIA_UPLOAD_DIR + "categories/{0}".format(file_name)
 
+class SantuiApplication(models.Model):
+    """
+    数据模型：三退申请
+    """
+    name = models.CharField(max_length=255, verbose_name="三退者名称")
+    content = models.TextField(verbose_name="申请内容")
+    note = models.TextField(verbose_name="备注", blank=True, null=True)
+    is_completed = models.BooleanField(default=False, verbose_name="是否已完成")
+    completed_at = models.DateTimeField(null=True, blank=True, verbose_name="完成时间")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="更新时间")
+
+    class Meta:
+        verbose_name = "三退申请"
+        verbose_name_plural = "三退申请"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.name
 
 class Media(models.Model):
     """The most important model for MediaCMS"""
