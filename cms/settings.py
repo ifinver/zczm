@@ -17,7 +17,7 @@ CAN_ADD_MEDIA = "all"
 
 # who can comment
 # valid options include 'all', 'email_verified', 'advancedUser'
-CAN_COMMENT = "all"
+CAN_COMMENT = "advancedUser"
 
 # valid choices here are 'public', 'private', 'unlisted
 PORTAL_WORKFLOW = "public"
@@ -325,6 +325,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
