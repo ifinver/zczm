@@ -9,13 +9,14 @@ from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework.permissions import AllowAny
 
 from users.models import User
 from users.serializers import UserSerializer
 
 from .methods import is_mediacms_manager
 from .models import Comment, Media, SantuiApplication
-from .permissions import IsMediacmsEditor, AllowAny
+from .permissions import IsMediacmsEditor
 from .serializers import CommentSerializer, MediaSerializer
 
 
@@ -317,6 +318,45 @@ class SubmitSantui(APIView):
                 {"msg": "获取数据失败", "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class MarkAsCompleted(APIView):
+    """标记三退申请为已完成"""
+
+    permission_classes = (IsMediacmsEditor,)  # 仅允许具有编辑权限的用户操作
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER, required=True, description="三退申请的 ID"
+            ),
+        ],
+        tags=['Manage'],
+        operation_summary='Mark Santui Application as Completed',
+        operation_description='将指定三退申请标记为已完成，并记录完成时间',
+    )
+    def post(self, request, format=None):
+        """处理标记为已完成的逻辑"""
+        application_id = request.data.get("id")
+
+        if not application_id:
+            return Response({"msg": "ID 不能为空"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 获取对应的记录
+            application = SantuiApplication.objects.get(id=application_id)
+            if application.is_completed:
+                return Response({"msg": "该条目已完成，无需重复操作"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 更新完成状态和完成时间
+            application.is_completed = True
+            application.completed_at = now()
+            application.save()
+
+            return Response({"msg": "标记成功", "data": {"id": application_id}}, status=status.HTTP_200_OK)
+        except SantuiApplication.DoesNotExist:
+            return Response({"msg": "记录不存在"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"msg": "操作失败", "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class UserList(APIView):
     """Users listings
