@@ -30,6 +30,108 @@
             width: 100%;
             height: auto;
         }
+
+        .expandable-text {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #6ec1e4;
+            transition: color 0.3s;
+        }
+
+        .expandable-text.expanded {
+            color: #61ce70;
+        }
+
+        .arrow {
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        .content.expanded {
+            max-height: 1000px;
+        }
+
+        .input-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+            padding: 18px;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-area .left-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: red;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .input-area .left-text span {
+            display: block;
+            color: blue;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .input-area .form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form input, .form textarea, .form button {
+            padding: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form button {
+            background-color: #6ec1e4;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .form button:hover {
+            background-color: #61ce70;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8rem;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +143,103 @@
             <source src="/media/encoded/3/admin/9111175c5f774177b5aa6d0df011b809.9111175c5f774177b5aa6d0df011b809.中共不是中国.mp4.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+
+        <!-- Expandable Text 1 -->
+        <div class="expandable-text" onclick="toggleContent('expandableContent1', 'arrow1')" id="text1">
+            <span class="arrow" id="arrow1">&#9654;</span>
+            中共的历史就是一部杀人的历史...(点击展开)
+        </div>
+
+        <div class="content" id="expandableContent1" style="max-height: 0;">
+            <p>1.为什么“天要灭中共　退党保平安”？</p>
+            <p>答：从天象看：二零零四年十一月十九日，大纪元发表《九评共产党》系列社论，从历史、政治、经济、文化、信仰等层面深刻揭示了中共的欺骗、暴力、邪教和流氓本性。二零零五年一月十二日大纪元发表郑重声明。由此引发三亿人退党大潮。这其实就是“天灭中共”的天象。</p>
+        </div>
+
+        <!-- Expandable Text 2 -->
+        <div class="expandable-text" onclick="toggleContent('expandableContent2', 'arrow2')" id="text2">
+            <span class="arrow" id="arrow2">&#9654;</span>
+            中共是真正的反华势力..(点击展开)
+        </div>
+
+        <div class="content" id="expandableContent2" style="max-height: 0;">
+            <p>百年来，中共以恐怖主义方式不断掠夺中华儿女的个人财富和中华民族的国家资源，把一个繁荣几千年的中华古国搞得文化凋敝，山河破败，遍地灾殃，黎民悲苦不堪。</p>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <!-- Left Text -->
+            <div class="left-text">
+                <span>三退即：退出少先队、共青团、共产党。三退可选择使用真名或任何化名（不记名）皆可。</span>
+                <span>三退发表须知：</span>
+                <span>✔ 本站使用加密传输，不会给您带来安全影响；</span>
+                <span>✔ 若选择使用化名（三退）请尽量使用正常的中文化名；</span>
+                <span>✔ 三退不会影响您的生活、工作与学习，对您不会产生任何实质影响；</span>
+                <span>✔ 三退不是到组织内部退，是顺天意退，抹去当初加入时的一切誓言。</span>
+            </div>
+
+            <!-- Form -->
+            <form class="form" id="retirementForm">
+                <label for="name">三退者名称（可任意化名）</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="application">申请内容</label>
+                <input type="text" id="application" name="application" required>
+
+                <label for="remarks">留言备注（选填）</label>
+                <textarea id="remarks" name="remarks" rows="3"></textarea>
+
+                <button type="button" onclick="submitForm()">提交申请</button>
+                <div id="error-message" class="error"></div>
+            </form>
+        </div>
+
+        <img decoding="async" width="799" height="83" src="/media/original/thumbnails/user/admin/5d225d8249dd47fda421c10b5c1e9b6e.tuidang_b4.jpg_Sxi8hGp.jpg">
+
+        <div id="footer-text">
+            <p>一个政党自建政以来杀害无辜善良的同胞8000万到1亿，历史上从来没有哪个朝代或政党会对自己的百姓下如此狠手。善恶到头终有报，各种灾难频繁出现不能不引起大家的重视了。天不降无妄之灾，这也许就是上天在警示还没有从毒誓中脱离出来的人们—就是我们所说的—“三退保平安”。</p>
+            <p>自古以来，社会礼崩乐坏，道德伦丧之际，往往伴随着瘟疫的流行。只有从内心回归道德与善良，才能获得神佛护佑。<br>当今很多中国人的亲身经历验证了：只要退出中共相关组织，就能逢凶化吉。平安走过劫难是人们的共同心愿，能否得到上天护佑而免于瘟疫和各种灾难，就在您那边关键的一念。</p>
+            <p>如果今天您不相信善恶有报，不相信三退能保平安，当灾难来时您想选择三退但是已经没有选择的机会了，所以宁可信其有 不可信其无，三退不是去组织或单位退，不会对您生活或工作带来任何麻烦，真名化名都可以，神佛看人心，机不可失失不再来。</p>
+        </div>
     </div>
+
+    <script>
+        function toggleContent(contentId, arrowId) {
+            const content = document.getElementById(contentId);
+            const arrow = document.getElementById(arrowId);
+            const text = document.getElementById(contentId === 'expandableContent1' ? 'text1' : 'text2');
+
+            if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+                content.style.maxHeight = "0px";
+                arrow.innerHTML = '&#9654;'; // Right arrow
+                text.classList.remove('expanded');
+            } else {
+                content.style.maxHeight = "1000px";
+                arrow.innerHTML = '&#9650;'; // Up arrow
+                text.classList.add('expanded');
+            }
+        }
+
+        function submitForm() {
+            const name = document.getElementById('name').value.trim();
+            const application = document.getElementById('application').value.trim();
+            const errorMessage = document.getElementById('error-message');
+
+            if (!name || !application) {
+                errorMessage.textContent = "请填写所有必填字段。";
+                return;
+            }
+
+            errorMessage.textContent = ""; // Clear error message
+
+            // Simulating API call
+            console.log("Submitting:", {
+                name: name,
+                application: application,
+                remarks: document.getElementById('remarks').value.trim()
+            });
+
+            alert("申请已提交！");
+        }
+    </script>
 </body>
 </html>
