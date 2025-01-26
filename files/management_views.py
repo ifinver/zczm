@@ -262,6 +262,7 @@ class SubmitSantui(APIView):
         operation_summary='Apply Santui',
         operation_description='提交三退申请',
     )
+    @csrf_exempt
     def post(self, request, format=None):
         name = request.data.get("name")
         content = request.data.get("content")
