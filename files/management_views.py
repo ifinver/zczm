@@ -7,13 +7,15 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from users.models import User
 from users.serializers import UserSerializer
 
 from .methods import is_mediacms_manager
 from .models import Comment, Media, SantuiApplication
-from .permissions import IsMediacmsEditor
+from .permissions import IsMediacmsEditor, AllowAny
 from .serializers import CommentSerializer, MediaSerializer
 
 
@@ -242,10 +244,11 @@ class NavDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         
+@method_decorator(csrf_exempt, name="dispatch")
 class SubmitSantui(APIView):
-    """提交三退
-    """
+    """提交三退"""
 
+    permission_classes = (AllowAny,)
     parser_classes = (JSONParser,)
     
     @swagger_auto_schema(
