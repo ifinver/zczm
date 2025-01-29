@@ -47,7 +47,7 @@ export const ManageSantuiPage = ({ title }) => {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: 'auto', padding: '24px', position: 'relative' }}>
+    <div style={{ margin: 'auto', padding: '24px', position: 'relative' }}>
       <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>{title}</h1>
       {errorMessage && (
         <div style={{
@@ -65,7 +65,8 @@ export const ManageSantuiPage = ({ title }) => {
             <div key={app.id} style={{
               background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px',
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', transition: 'box-shadow 0.3s ease-in-out',
-              maxWidth: '400px', width: '100%', cursor: 'pointer', position: 'relative', minHeight: '150px'
+              maxWidth: '400px', width: '100%', cursor: 'pointer', position: 'relative', minHeight: '180px',
+              paddingBottom: '40px'
             }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
