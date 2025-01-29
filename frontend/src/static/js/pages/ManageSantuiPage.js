@@ -5,6 +5,7 @@ import axios from 'axios';
 
 export const ManageSantuiPage = ({ title }) => {
   const [applications, setApplications] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     fetchApplications();
@@ -40,13 +41,19 @@ export const ManageSantuiPage = ({ title }) => {
       );
     })
     .catch(error => {
-      console.error('标记失败:', error);
+      setErrorMessage('标记失败，请重试');
+      setTimeout(() => setErrorMessage(null), 3000);
     });
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 relative">
       <h1 className="text-2xl font-bold mb-6">{title}</h1>
+      {errorMessage && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white p-4 rounded shadow-lg z-50">
+          {errorMessage}
+        </div>
+      )}
       <table className="w-full border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr className="bg-gray-100">
