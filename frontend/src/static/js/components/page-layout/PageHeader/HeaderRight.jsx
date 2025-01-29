@@ -175,6 +175,10 @@ export function HeaderRight(props) {
                       hasHeaderThemeSwitcher={header.hasThemeSwitcher}
                     />
 
+                    <div>
+                      <a href='/static/santui.html'>我要三退</a>
+                    </div>
+
                     {PageStore.get('config-contents').header.right ? (
                       <div
                         className="on-header-right"
