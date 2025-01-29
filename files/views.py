@@ -466,7 +466,7 @@ class MediaList(APIView):
 class SantuiSubmit(APIView):
     """提交三退申请"""
 
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrEditor)
+    permission_classes = ()
     parser_classes = (JSONParser,)
     
     @swagger_auto_schema(
