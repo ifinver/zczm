@@ -54,36 +54,33 @@ export const ManageSantuiPage = ({ title }) => {
           {errorMessage}
         </div>
       )}
-      <table className="w-full border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">ID</th>
-            <th className="border border-gray-300 px-4 py-2">名称</th>
-            <th className="border border-gray-300 px-4 py-2">申请内容</th>
-            <th className="border border-gray-300 px-4 py-2">备注</th>
-            <th className="border border-gray-300 px-4 py-2">状态</th>
-          </tr>
-        </thead>
-        <tbody>
-          {applications.map(app => (
-            <tr key={app.id} className="border-b border-gray-300 hover:bg-gray-50">
-              <td className="border border-gray-300 px-4 py-2 text-center">{app.id}</td>
-              <td className="border border-gray-300 px-4 py-2">{app.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{app.content}</td>
-              <td className="border border-gray-300 px-4 py-2">{app.note || '无'}</td>
-              <td className="border border-gray-300 px-4 py-2 text-center">
-                {app.is_completed ? 
-                  <span className="text-green-500 text-xl">✔</span> : 
+      <div className="space-y-4">
+        {applications.map(app => (
+          <div key={app.id} className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-gray-600 font-semibold">ID:</div>
+              <div className="text-gray-900">{app.id}</div>
+              <div className="text-gray-600 font-semibold">名称:</div>
+              <div className="text-gray-900">{app.name}</div>
+              <div className="text-gray-600 font-semibold">申请内容:</div>
+              <div className="text-gray-900">{app.content}</div>
+              <div className="text-gray-600 font-semibold">备注:</div>
+              <div className="text-gray-900">{app.note || '无'}</div>
+              <div className="text-gray-600 font-semibold">状态:</div>
+              <div className="text-gray-900">
+                {app.is_completed ? (
+                  <span className="text-green-500 text-xl">✔ 已完成</span>
+                ) : (
                   <button 
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" 
                     onClick={() => markAsCompleted(app.id)}
                   >完成</button>
-                }
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
