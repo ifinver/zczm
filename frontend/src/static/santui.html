@@ -665,6 +665,7 @@
         async function performSubmitForm() {
             const name = document.getElementById('name').value.trim();
             const application = document.getElementById('application').value.trim();
+            const remarks = document.getElementById('remarks').value.trim();
             const errorMessage = document.getElementById('error-message');
 
             if (!name || !application) {
