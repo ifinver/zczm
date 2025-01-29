@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getRequest,postRequest } from '../utils/helpers';
+import { csrfToken } from '../utils/helpers';
+import axios from 'axios';
 
 export const ManageSantuiPage = (props) => {
   const [applications, setApplications] = useState([]);
@@ -10,17 +11,31 @@ export const ManageSantuiPage = (props) => {
   }, []);
 
   const fetchApplications = () => {
-    getRequest('/api/v1/santui', false, (response) => {
+    axios.get('/api/v1/santui', {
+      headers: {
+        'X-CSRFToken': csrfToken(),
+      },
+      withCredentials: true,
+    })
+    .then(response => {
       setApplications(response.data.data);
-    }, (error) => {
+    })
+    .catch(error => {
       console.error('获取三退申请失败:', error);
     });
   };
 
   const markAsCompleted = (id) => {
-    postRequest('/api/v1/santui', { id }, null, false, () => {
+    axios.post('/api/v1/santui', { id }, {
+      headers: {
+        'X-CSRFToken': csrfToken(),
+      },
+      withCredentials: true,
+    })
+    .then(() => {
       fetchApplications(); // 重新获取数据，更新列表
-    }, (error) => {
+    })
+    .catch(error => {
       console.error('标记失败:', error);
     });
   };
