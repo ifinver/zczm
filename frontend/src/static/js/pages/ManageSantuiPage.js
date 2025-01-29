@@ -67,17 +67,16 @@ export const ManageSantuiPage = ({ title }) => {
           }}
           onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
           onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <span style={{ fontWeight: 'bold', color: '#374151' }}>ID:</span>
-              <span style={{ fontWeight: 'bold', color: '#374151' }}>{app.id}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: '#6b7280' }}>
+              <span>ID:</span>
+              <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.id}</span>
+              <span>名称:</span>
+              <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.name}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <span style={{ fontWeight: 'bold', color: '#374151' }}>名称:</span>
-              <span style={{ fontWeight: 'bold', color: '#374151' }}>{app.name}</span>
-            </div>
-            <div style={{ color: '#374151', marginBottom: '12px' }}>申请内容: {app.content}</div>
-            <div style={{ color: '#374151', marginBottom: '12px' }}>备注: {app.note || '无'}</div>
-            <div style={{ fontWeight: 'bold', color: '#1f2937' }}>状态:</div>
+            <div style={{ color: '#6b7280', marginBottom: '12px' }}>申请内容:</div>
+            <div style={{ color: '#374151', marginBottom: '12px' }}>{app.content}</div>
+            <div style={{ color: '#6b7280', marginBottom: '12px' }}>备注:</div>
+            <div style={{ color: '#374151', marginBottom: '12px' }}>{app.note || '无'}</div>
             <div style={{ color: '#1f2937' }}>
               {app.is_completed ? (
                 <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
