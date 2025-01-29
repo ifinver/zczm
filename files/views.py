@@ -283,6 +283,13 @@ def manage_comments(request):
     context = {}
     return render(request, "cms/manage_comments.html", context)
 
+@login_required
+def manage_santui(request):
+    """List santui management view"""
+
+    context = {}
+    return render(request, "cms/manage_santui.html", context)
+
 
 def members(request):
     """List members view"""
