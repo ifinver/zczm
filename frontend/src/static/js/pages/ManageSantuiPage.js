@@ -48,37 +48,23 @@ export const ManageSantuiPage = ({ title }) => {
   };
 
   return (
-    <div className="container mx-auto p-6 relative">
+    <div className="container">
       <h1 className="text-2xl font-bold mb-6">{title}</h1>
-      {errorMessage && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white p-4 rounded shadow-lg z-50">
-          {errorMessage}
-        </div>
-      )}
-      <div className="flex flex-wrap gap-4 justify-start">
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      <div className="card-container">
         {applications.map(app => (
-          <div key={app.id} className="bg-gray-100 shadow-lg rounded-2xl p-6 border border-gray-300 max-w-xs hover:shadow-xl transition duration-300">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-600 font-semibold">ID:</span>
-              <span className="text-gray-900 font-bold">{app.id}</span>
+          <div key={app.id} className="card">
+            <div className="card-header">
+              <span>ID: {app.id}</span>
+              <span>名称: {app.name}</span>
             </div>
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-600 font-semibold">名称:</span>
-              <span className="text-gray-900 font-bold">{app.name}</span>
-            </div>
-            <div className="text-gray-600 font-semibold mb-2">申请内容:</div>
-            <div className="text-gray-900 mb-4">{app.content}</div>
-            <div className="text-gray-600 font-semibold mb-2">备注:</div>
-            <div className="text-gray-900 mb-4">{app.note || '无'}</div>
-            <div className="text-gray-600 font-semibold mb-2">状态:</div>
-            <div className="text-gray-900">
+            <div className="card-content">申请内容: {app.content}</div>
+            <div className="card-content">备注: {app.note || '无'}</div>
+            <div className="card-footer">
               {app.is_completed ? (
-                <span className="text-green-500 text-xl">✔ 已完成</span>
+                <span className="success-text">✔ 已完成</span>
               ) : (
-                <button 
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-                  onClick={() => markAsCompleted(app.id)}
-                >完成</button>
+                <button className="button" onClick={() => markAsCompleted(app.id)}>完成</button>
               )}
             </div>
           </div>
@@ -86,6 +72,7 @@ export const ManageSantuiPage = ({ title }) => {
       </div>
     </div>
   );
+  
 };
 
 ManageSantuiPage.propTypes = {

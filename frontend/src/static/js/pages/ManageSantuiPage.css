@@ -1,3 +1,4 @@
+/* 容器样式 */
 .container {
     max-width: 1200px;
     margin: auto;
@@ -5,6 +6,7 @@
     position: relative;
   }
   
+  /* 卡片样式 */
   .card {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -20,6 +22,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
   
+  /* 卡片头部 */
   .card-header {
     display: flex;
     justify-content: space-between;
@@ -28,18 +31,22 @@
   
   .card-header span {
     font-weight: bold;
+    color: #374151;
   }
   
+  /* 主要内容 */
   .card-content {
     color: #374151;
     margin-bottom: 12px;
   }
   
+  /* 备注 */
   .card-footer {
     font-weight: bold;
     color: #1f2937;
   }
   
+  /* 按钮样式 */
   .button {
     background-color: #2563eb;
     color: white;
@@ -55,12 +62,14 @@
     background-color: #1e40af;
   }
   
+  /* 成功状态文本 */
   .success-text {
     color: #16a34a;
     font-size: 1.2rem;
     font-weight: bold;
   }
   
+  /* 错误提示框 */
   .error-message {
     position: fixed;
     top: 50%;
@@ -72,5 +81,13 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 50;
+  }
+  
+  /* 让卡片使用流式布局 */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: flex-start;
   }
   
