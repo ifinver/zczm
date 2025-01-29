@@ -4,15 +4,19 @@
 {% block headtitle %}Manage Santui - {{PORTAL_NAME}}{% endblock headtitle %}
 
 {% block headermeta %}
-
 <meta property="og:title" content="Manage santui - {{PORTAL_NAME}}">
 <meta property="og:type" content="website">
 <meta property="og:description" content="">
-
 {% endblock headermeta %}
 
-{% block content %}<div id="page-manage-santui"></div>{% endblock %}
+{% block extra_styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/manage-santui.css' %}">
+{% endblock extra_styles %}
+
+{% block content %}
+<div id="page-manage-santui"></div>
+{% endblock %}
 
 {% block bottomimports %}
-<script src="{% static "js/manage-santui.js" %}"></script>
+<script src="{% static 'js/manage-santui.js' %}"></script>
 {% endblock bottomimports %}
