@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { csrfToken } from '../utils/helpers';
 import axios from 'axios';
-import './ManageSantuiPage.css'; 
 
 export const ManageSantuiPage = ({ title }) => {
   const [applications, setApplications] = useState([]);
@@ -48,23 +47,51 @@ export const ManageSantuiPage = ({ title }) => {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-2xl font-bold mb-6">{title}</h1>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div className="card-container">
+    <div style={{ maxWidth: '1200px', margin: 'auto', padding: '24px', position: 'relative' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>{title}</h1>
+      {errorMessage && (
+        <div style={{
+          position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+          backgroundColor: '#dc2626', color: 'white', padding: '16px', borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', zIndex: 50
+        }}>
+          {errorMessage}
+        </div>
+      )}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start' }}>
         {applications.map(app => (
-          <div key={app.id} className="card">
-            <div className="card-header">
-              <span>ID: {app.id}</span>
-              <span>名称: {app.name}</span>
+          <div key={app.id} style={{
+            background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', transition: 'box-shadow 0.3s ease-in-out',
+            maxWidth: '400px', width: '100%', cursor: 'pointer'
+          }}
+          onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
+          onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ fontWeight: 'bold', color: '#374151' }}>ID:</span>
+              <span style={{ fontWeight: 'bold', color: '#374151' }}>{app.id}</span>
             </div>
-            <div className="card-content">申请内容: {app.content}</div>
-            <div className="card-content">备注: {app.note || '无'}</div>
-            <div className="card-footer">
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ fontWeight: 'bold', color: '#374151' }}>名称:</span>
+              <span style={{ fontWeight: 'bold', color: '#374151' }}>{app.name}</span>
+            </div>
+            <div style={{ color: '#374151', marginBottom: '12px' }}>申请内容: {app.content}</div>
+            <div style={{ color: '#374151', marginBottom: '12px' }}>备注: {app.note || '无'}</div>
+            <div style={{ fontWeight: 'bold', color: '#1f2937' }}>状态:</div>
+            <div style={{ color: '#1f2937' }}>
               {app.is_completed ? (
-                <span className="success-text">✔ 已完成</span>
+                <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
               ) : (
-                <button className="button" onClick={() => markAsCompleted(app.id)}>完成</button>
+                <button 
+                  style={{
+                    backgroundColor: '#2563eb', color: 'white', padding: '8px 16px',
+                    borderRadius: '6px', fontWeight: 'bold', transition: 'background 0.3s',
+                    border: 'none', cursor: 'pointer'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
+                  onClick={() => markAsCompleted(app.id)}
+                >完成</button>
               )}
             </div>
           </div>
@@ -72,7 +99,6 @@ export const ManageSantuiPage = ({ title }) => {
       </div>
     </div>
   );
-  
 };
 
 ManageSantuiPage.propTypes = {
