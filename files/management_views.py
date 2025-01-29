@@ -304,7 +304,6 @@ class Santui(APIView):
         try:
             # 获取对应的记录
             application = SantuiApplication.objects.get(id=application_id)
-            return Response({"msg": "SantuiApplication.objects.get(id=application_id)"}, status=status.HTTP_400_BAD_REQUEST)
             if application.is_completed:
                 return Response({"msg": "该条目已完成，无需重复操作"}, status=status.HTTP_400_BAD_REQUEST)
 
