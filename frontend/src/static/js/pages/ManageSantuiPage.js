@@ -65,7 +65,7 @@ export const ManageSantuiPage = ({ title }) => {
             <div key={app.id} style={{
               background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px',
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', transition: 'box-shadow 0.3s ease-in-out',
-              maxWidth: '400px', width: '100%', cursor: 'pointer'
+              maxWidth: '400px', width: '100%', cursor: 'pointer', position: 'relative', minHeight: '150px'
             }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
@@ -83,7 +83,7 @@ export const ManageSantuiPage = ({ title }) => {
                   <div style={{ color: '#374151', marginBottom: '12px' }}>{noteContent}</div>
                 </>
               )}
-              <div style={{ color: '#1f2937' }}>
+              <div style={{ position: 'absolute', bottom: '16px', left: '16px' }}>
                 {app.is_completed ? (
                   <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
                 ) : (

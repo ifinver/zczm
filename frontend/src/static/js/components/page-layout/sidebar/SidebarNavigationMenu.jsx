@@ -227,6 +227,13 @@ export function SidebarNavigationMenu() {
 
     if (userCan.manageMedia) {
       items.push({
+        link: links.manage.santui,
+        icon: 'description',
+        text: '三退申请',
+        className: 'nav-item-manage-santui',
+      });
+      
+      items.push({
         link: links.manage.media,
         icon: 'miscellaneous_services',
         text: translateString("Manage media"),
@@ -249,13 +256,6 @@ export function SidebarNavigationMenu() {
         icon: 'miscellaneous_services',
         text: '管理站点',
         className: 'nav-item-manage-comments',
-      });
-
-      items.push({
-        link: links.manage.santui,
-        icon: 'description',
-        text: '三退申请',
-        className: 'nav-item-manage-santui',
       });
     }
 
