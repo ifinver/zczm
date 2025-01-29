@@ -1,70 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ReactJson from 'react-json-view'; // 用于美观的 JSON 编辑
-import { PageActions } from '../utils/actions';
-import { csrfToken,postRequest } from '../utils/helpers';
-import { Page } from './_Page';
+import { getRequest,postRequest } from '../utils/helpers';
 
-export class ManageSantuiPage extends Page {
-  constructor(props) {
-    super(props, 'manage-santui');
+export const ManageSantuiPage = (props) => {
+  const [applications, setApplications] = useState([]);
 
-    this.state = {
-      modifiedContent: [], 
-    };
+  useEffect(() => {
+    fetchApplications();
+  }, []);
 
-    this.requestUrl = '/api/v1/manage_nav';
-  }
-
-  componentDidMount() {
-    fetch('/static/nav.json')
-      .then((response) => response.json())
-      .then((data) => this.setState({ modifiedContent: data }));
-  }
-
-  handleModify = () => {
-    const { modifiedContent } = this.state;
-
-    postRequest(this.requestUrl, 
-      { detail: JSON.stringify(modifiedContent) },
-      {
-        headers: {
-          'X-CSRFToken': csrfToken(),
-        },
-      },
-    )
-      .then((response) => {
-        if (response && response.msg === 'ok') {
-          PageActions.addNotification('站点配置修改成功.', '提示');
-        } else {
-          if(response && response.msg){
-            PageActions.addNotification(response.msg, '出錯了');
-          }else{
-            PageActions.addNotification('站点配置修改失败.', '出錯了');
-          }
-          
-        }
-      })
-      .catch(() => {
-        PageActions.addNotification('站点配置修改时出错.', '错误');
-      });
+  const fetchApplications = () => {
+    getRequest('/api/v1/santui', false, (response) => {
+      setApplications(response.data.data);
+    }, (error) => {
+      console.error('获取三退申请失败:', error);
+    });
   };
 
-  handleJsonChange = (edit) => {
-    this.setState({ modifiedContent:edit.updated_src });
+  const markAsCompleted = (id) => {
+    postRequest('/api/v1/santui', { id }, null, false, () => {
+      fetchApplications(); // 重新获取数据，更新列表
+    }, (error) => {
+      console.error('标记失败:', error);
+    });
   };
 
-  pageContent() {
-    const { modifiedContent } = this.state;
-
-    return (
-      <div>
-        <h1>管理三退申请</h1>
-        <br/><br/>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <h1>管理三退申请</h1>
+      <br/><br/>
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>申请内容</th>
+            <th>备注</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {applications.map(app => (
+            <tr key={app.id}>
+              <td>{app.id}</td>
+              <td>{app.name}</td>
+              <td>{app.content}</td>
+              <td>{app.note || '无'}</td>
+              <td>{app.is_completed ? '已完成' : '未完成'}</td>
+              <td>
+                {!app.is_completed && (
+                  <button onClick={() => markAsCompleted(app.id)}>已完成</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 ManageSantuiPage.propTypes = {
   title: PropTypes.string.isRequired,
