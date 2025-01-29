@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { csrfToken } from '../utils/helpers';
 import axios from 'axios';
 
-export const ManageSantuiPage = (props) => {
+export const ManageSantuiPage = ({ title }) => {
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
@@ -33,7 +33,11 @@ export const ManageSantuiPage = (props) => {
       withCredentials: true,
     })
     .then(() => {
-      fetchApplications(); // 重新获取数据，更新列表
+      setApplications(prevApplications =>
+        prevApplications.map(app =>
+          app.id === id ? { ...app, is_completed: true } : app
+        )
+      );
     })
     .catch(error => {
       console.error('标记失败:', error);
@@ -41,32 +45,33 @@ export const ManageSantuiPage = (props) => {
   };
 
   return (
-    <div>
-      <h1>管理三退申请</h1>
-      <br/><br/>
-      <table border="1" width="100%">
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">{title}</h1>
+      <table className="w-full border-collapse border border-gray-300 shadow-md">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>名称</th>
-            <th>申请内容</th>
-            <th>备注</th>
-            <th>状态</th>
-            <th>操作</th>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 px-4 py-2">ID</th>
+            <th className="border border-gray-300 px-4 py-2">名称</th>
+            <th className="border border-gray-300 px-4 py-2">申请内容</th>
+            <th className="border border-gray-300 px-4 py-2">备注</th>
+            <th className="border border-gray-300 px-4 py-2">状态</th>
           </tr>
         </thead>
         <tbody>
           {applications.map(app => (
-            <tr key={app.id}>
-              <td>{app.id}</td>
-              <td>{app.name}</td>
-              <td>{app.content}</td>
-              <td>{app.note || '无'}</td>
-              <td>{app.is_completed ? '已完成' : '未完成'}</td>
-              <td>
-                {!app.is_completed && (
-                  <button onClick={() => markAsCompleted(app.id)}>已完成</button>
-                )}
+            <tr key={app.id} className="border-b border-gray-300 hover:bg-gray-50">
+              <td className="border border-gray-300 px-4 py-2 text-center">{app.id}</td>
+              <td className="border border-gray-300 px-4 py-2">{app.name}</td>
+              <td className="border border-gray-300 px-4 py-2">{app.content}</td>
+              <td className="border border-gray-300 px-4 py-2">{app.note || '无'}</td>
+              <td className="border border-gray-300 px-4 py-2 text-center">
+                {app.is_completed ? 
+                  <span className="text-green-500 text-xl">✔</span> : 
+                  <button 
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" 
+                    onClick={() => markAsCompleted(app.id)}
+                  >完成</button>
+                }
               </td>
             </tr>
           ))}
