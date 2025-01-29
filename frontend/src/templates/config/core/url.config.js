@@ -29,4 +29,5 @@ module.exports = {
   manageMedia: './manage-media.html',
   manageUsers: './manage-users.html',
   manageComments: './manage-comments.html',
+  manageSantui: './manage-santui.html',
 };

@@ -7,6 +7,7 @@ export * from './LatestMediaPage';
 export * from './LikedMediaPage';
 export * from './ManageCommentsPage';
 export * from './ManageMediaPage';
+export * from './ManageSantuiPage';
 export * from './ManageUsersPage';
 export * from './MediaPage';
 export * from './MembersPage';

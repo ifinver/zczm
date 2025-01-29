@@ -85,6 +85,7 @@ const PAGES = {
   'manage-media': { id: 'manage-media', title: 'Manage media', component: 'ManageMediaPage' },
   'manage-users': { id: 'manage-users', title: 'Manage users', component: 'ManageUsersPage' },
   'manage-comments': { id: 'manage-comments', title: 'Manage site', component: 'ManageCommentsPage' },
+  'manage-santui': { id: 'manage-santui', title: 'Manage santui', component: 'ManageSantuiPage' },
   'add-media': {
     id: 'add-media',
     title: 'Add media',

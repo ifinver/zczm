@@ -250,6 +250,13 @@ export function SidebarNavigationMenu() {
         text: '管理站点',
         className: 'nav-item-manage-comments',
       });
+
+      items.push({
+        link: links.manage.santui,
+        icon: 'description',
+        text: '三退申请',
+        className: 'nav-item-manage-santui',
+      });
     }
 
     return items.length ? <NavigationMenuList key="admin" items={formatItems(items)} /> : null;

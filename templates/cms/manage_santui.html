@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block headtitle %}Manage Santui - {{PORTAL_NAME}}{% endblock headtitle %}
+
+{% block headermeta %}
+
+<meta property="og:title" content="Manage santui - {{PORTAL_NAME}}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="">
+
+{% endblock headermeta %}
+
+{% block content %}<div id="page-manage-santui"></div>{% endblock %}
+
+{% block bottomimports %}
+<script src="{% static "js/manage-santui.js" %}"></script>
+{% endblock bottomimports %}
