@@ -59,42 +59,49 @@ export const ManageSantuiPage = ({ title }) => {
         </div>
       )}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start' }}>
-        {applications.map(app => (
-          <div key={app.id} style={{
-            background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', transition: 'box-shadow 0.3s ease-in-out',
-            maxWidth: '400px', width: '100%', cursor: 'pointer'
-          }}
-          onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
-          onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: '#6b7280' }}>
-              <span>ID:</span>
-              <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.id}</span>
-              <span>名称:</span>
-              <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.name}</span>
-            </div>
-            <div style={{ color: '#6b7280', marginBottom: '12px' }}>申请内容:</div>
-            <div style={{ color: '#374151', marginBottom: '12px' }}>{app.content}</div>
-            <div style={{ color: '#6b7280', marginBottom: '12px' }}>备注:</div>
-            <div style={{ color: '#374151', marginBottom: '12px' }}>{app.note || '无'}</div>
-            <div style={{ color: '#1f2937' }}>
-              {app.is_completed ? (
-                <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
-              ) : (
-                <button 
-                  style={{
-                    backgroundColor: '#2563eb', color: 'white', padding: '8px 16px',
-                    borderRadius: '6px', fontWeight: 'bold', transition: 'background 0.3s',
-                    border: 'none', cursor: 'pointer'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
-                  onClick={() => markAsCompleted(app.id)}
-                >完成</button>
+        {applications.map(app => {
+          const noteContent = app.note && JSON.stringify(app.note) !== '{}' ? app.note : '无';
+          return (
+            <div key={app.id} style={{
+              background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '16px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '24px', transition: 'box-shadow 0.3s ease-in-out',
+              maxWidth: '400px', width: '100%', cursor: 'pointer'
+            }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)'}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: '#6b7280' }}>
+                <span>ID:</span>
+                <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.id}</span>
+                <span>名字:</span>
+                <span style={{ color: '#374151', fontWeight: 'bold' }}>{app.name}</span>
+              </div>
+              <div style={{ color: '#6b7280', marginBottom: '12px' }}>申请内容:</div>
+              <div style={{ color: '#374151', marginBottom: '12px' }}>{app.content}</div>
+              {noteContent !== '无' && (
+                <>
+                  <div style={{ color: '#6b7280', marginBottom: '12px' }}>备注:</div>
+                  <div style={{ color: '#374151', marginBottom: '12px' }}>{noteContent}</div>
+                </>
               )}
+              <div style={{ color: '#1f2937' }}>
+                {app.is_completed ? (
+                  <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
+                ) : (
+                  <button 
+                    style={{
+                      backgroundColor: '#2563eb', color: 'white', padding: '8px 16px',
+                      borderRadius: '6px', fontWeight: 'bold', transition: 'background 0.3s',
+                      border: 'none', cursor: 'pointer'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
+                    onClick={() => markAsCompleted(app.id)}
+                  >完成</button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
