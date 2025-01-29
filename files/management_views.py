@@ -296,7 +296,6 @@ class Santui(APIView):
     def post(self, request, format=None):
         """处理标记为已完成的逻辑"""
 
-        return Response({"msg": request.data}, status=status.HTTP_400_BAD_REQUEST)
         application_id = request.data.get("id")
 
         if not application_id:
@@ -305,6 +304,7 @@ class Santui(APIView):
         try:
             # 获取对应的记录
             application = SantuiApplication.objects.get(id=application_id)
+            return Response({"msg": "SantuiApplication.objects.get(id=application_id)"}, status=status.HTTP_400_BAD_REQUEST)
             if application.is_completed:
                 return Response({"msg": "该条目已完成，无需重复操作"}, status=status.HTTP_400_BAD_REQUEST)
 
