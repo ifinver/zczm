@@ -40,7 +40,6 @@ export class ManageCommentsPage extends Page {
       },
       false,
       (response) => {
-        console.log(response)
         if (response && response.data && response.data.msg === 'ok') {
           PageActions.addNotification('导航配置修改成功.', '提示');
         } else {
@@ -70,7 +69,6 @@ export class ManageCommentsPage extends Page {
       },
       false,
       (response) => {
-        console.log(response)
         if (response && response.data && response.data.msg === 'ok') {
           PageActions.addNotification('弹框配置修改成功.', '提示');
         } else {
