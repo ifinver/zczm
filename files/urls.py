@@ -85,7 +85,7 @@ urlpatterns = [
     re_path(r"^api/v1/manage_media$", management_views.MediaList.as_view()),
     re_path(r"^api/v1/manage_comments$", management_views.CommentList.as_view()),
     re_path(r"^api/v1/manage_nav$", management_views.NavDetail.as_view()),
-    re_path(r"^api/v1/manage_pop$", management_views.NavDetail.as_view()),
+    re_path(r"^api/v1/manage_pop$", management_views.PopDetail.as_view()),
     re_path(r"^api/v1/santui$", management_views.Santui.as_view()),
     re_path(r"^api/v1/manage_users$", management_views.UserList.as_view()),
     re_path(r"^api/v1/tasks$", views.TasksList.as_view()),
