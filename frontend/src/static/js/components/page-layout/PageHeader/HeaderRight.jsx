@@ -169,11 +169,11 @@ export function HeaderRight(props) {
                     </div>
 
                     <LoginButton user={user} link={links.signin} hasHeaderThemeSwitcher={header.hasThemeSwitcher} />
-                    <RegisterButton
+                    {/* <RegisterButton
                       user={user}
                       link={links.register}
                       hasHeaderThemeSwitcher={header.hasThemeSwitcher}
-                    />
+                    /> */}
 
                     <div>
                       <a href='/static/santui.html'>我要三退</a>
