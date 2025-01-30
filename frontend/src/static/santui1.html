@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三退保平安</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #6EC1E4;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+        }
+
+        .expandable-text {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #6ec1e4;
+            transition: color 0.3s;
+        }
+
+        .expandable-text.expanded {
+            color: #61ce70;
+        }
+
+        .arrow {
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        .content.expanded {
+            max-height: 90000px;
+        }
+
+        .input-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 20px;
+            padding: 18px;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-area .left-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .left-text-bg {
+            background-color: #FC7C5F;
+            padding: 20px;
+            border-radius: 18px;
+        }
+
+        .input-area .left-text span {
+            display: block;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .input-area .left-text span:nth-child(n+3):before {
+            content: "✔ ";
+            color: purple;
+        }
+
+        .input-area .form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form label {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .form input,
+        .form textarea,
+        .form button {
+            padding: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form button {
+            background-color: #6ec1e4;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .form button:hover {
+            background-color: #61ce70;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8rem;
+        }
+
+        #footer-text {
+            color: #7A7A7A;
+        }
+
+        .page-header {
+            z-index: 6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            display: table;
+            width: 100%;
+            border-bottom: 1px solid #eeebeb;
+            /* 添加的横线 */
+            background-color: white;
+            /* 确保横线和背景有对比 */
+        }
+
+        .page-header-left {
+            left: 20px;
+            padding-right: 104px;
+            padding-left: 40px;
+        }
+
+        .logo {
+            padding: 0;
+            margin: 0;
+            font-size: 1.25em;
+            font-weight: 300;
+        }
+
+        .logo span {
+            position: relative;
+            display: block;
+            float: left;
+        }
+
+        .logo span>img,
+        .logo picture {
+            position: relative;
+            float: left;
+            max-width: 117.58px;
+            max-height: 38.99px;
+        }
+
+        img {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-area">
+            <!-- Left Text -->
+            <div class="left-text">
+                <div class="left-text-bg">
+                    <span>三退即：退出少先队、共青团、共产党。三退可选择使用真名或任何化名（不记名）皆可。</span>
+                    <span>三退发表须知：</span>
+                    <span>本站使用加密传输，不会给您带来安全影响；</span>
+                    <span>若选择使用化名（三退）请尽量使用正常的中文化名；</span>
+                    <span>三退不会影响您的生活、工作与学习，对您不会产生任何实质影响；</span>
+                    <span>三退不是到组织内部退，是顺天意退，抹去当初加入时的一切誓言。</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form class="form" id="retirementForm">
+                <label for="name">三退者名称（可任意化名）</label>
+                <input type="text" id="name" name="name" required placeholder="例：德福、川普、叶凡">
+
+                <label for="application">申请内容</label>
+                <textarea type="text" id="application" rows="3" name="application" required placeholder="例：德福退少先队。川普退共青团和共产党。叶凡三种组织都退。加入过什么退什么即可。"></textarea>
+
+                <label for="remarks">留言备注（选填）</label>
+                <input id="remarks" name="remarks" placeholder="任何想说的话，内容不限（选填）">
+
+                <button type="button" onclick="submitForm()">提交申请</button>
+                <div id="error-message" class="error"></div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
