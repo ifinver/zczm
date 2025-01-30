@@ -84,15 +84,16 @@
          * @param {string} title   - 标题文本
          * @param {string} content - 主体内容(HTML)
          */
-        function showPopup(title, content) {
+        function showPopup(title, content, button_text, button_link) {
         // 创建弹窗容器：固定在浏览器右下角
         const popupContainer = document.createElement('div');
         popupContainer.style.position = 'fixed';
-        popupContainer.style.bottom = '20px';
-        popupContainer.style.right = '20px';
+        popupContainer.style.bottom = '10px';
+        popupContainer.style.right = '10px';
         popupContainer.style.width = '400px';
         popupContainer.style.backgroundColor = '#1E73BE';
         popupContainer.style.padding = '18px';
+        popupContainer.style.paddingBottom = '54px';
         popupContainer.style.boxSizing = 'border-box';
         popupContainer.style.zIndex = '9999';
         popupContainer.style.color = '#fff';
@@ -119,25 +120,25 @@
         const closeBtn = document.createElement('button');
         closeBtn.textContent = 'X';  // 按钮文字
         closeBtn.style.position = 'absolute';
-        closeBtn.style.top = '10px';
-        closeBtn.style.right = '10px';
+        closeBtn.style.top = '0px';
+        closeBtn.style.right = '0px';
         closeBtn.style.width = '32px';
         closeBtn.style.height = '24px';
         closeBtn.style.backgroundColor = '#EEEE22';
         closeBtn.style.border = 'none';
         closeBtn.style.cursor = 'pointer';
         closeBtn.style.fontSize = '16px';
-        closeBtn.style.fontWeight = 'bold';
+        closeBtn.style.color = '#1E73B3';
 
         // 底部左侧链接【点击了解】
         const link = document.createElement('a');
-        link.href = '/static/santui.html';
-        link.textContent = '【点击了解】';
+        link.href = button_link;
+        link.textContent = button_text;
         link.style.color = '#fff';
         link.style.textDecoration = 'none';
         link.style.position = 'absolute';
         link.style.bottom = '10px';
-        link.style.left = '18px';
+        link.style.left = '10px';
 
         // 将各元素添加进容器
         popupContainer.appendChild(popupTitle);
@@ -159,7 +160,7 @@
         fetchPopupData()
             .then(data => {
             // data 例如: { "title": "标题", "content": "HTML内容..." }
-            showPopup(data.title, data.content);
+            showPopup(data.title, data.content,data.button_text, data.button_link);
             // 记录本次弹窗时间
             localStorage.setItem('customPopupLastShown', new Date());
             })
