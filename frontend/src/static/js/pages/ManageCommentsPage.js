@@ -38,8 +38,8 @@ export class ManageCommentsPage extends Page {
           'X-CSRFToken': csrfToken(),
         },
       },
-    )
-      .then((response) => {
+      false,
+      (response) => {
         console.log(response)
         if (response && response.msg === 'ok') {
           PageActions.addNotification('导航配置修改成功.', '提示');
@@ -51,10 +51,11 @@ export class ManageCommentsPage extends Page {
           }
           
         }
-      })
-      .catch(() => {
+      },
+      () => {
         PageActions.addNotification('导航配置修改时出错.', '错误');
-      });
+      }
+    )
   };
 
   handleModifyPop = () => {
@@ -67,8 +68,8 @@ export class ManageCommentsPage extends Page {
           'X-CSRFToken': csrfToken(),
         },
       },
-    )
-      .then((response) => {
+      false,
+      (response) => {
         console.log(response)
         if (response && response.msg === 'ok') {
           PageActions.addNotification('弹框配置修改成功.', '提示');
@@ -78,12 +79,12 @@ export class ManageCommentsPage extends Page {
           }else{
             PageActions.addNotification('弹框配置修改失败.', '出錯了');
           }
-          
         }
-      })
-      .catch(() => {
+      },
+      () => {
         PageActions.addNotification('弹框配置修改时出错.', '错误');
-      });
+      }
+    )
   };
 
   handleNavJsonChange = (edit) => {
