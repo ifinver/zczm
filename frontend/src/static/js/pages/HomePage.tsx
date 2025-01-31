@@ -134,19 +134,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </MediaListRow>
                   )}
 
-                <MediaListRow
-                  title="剧集"
-                  style={undefined}
-                  viewAllLink={undefined}>
-
-                  <LazyLoadItemListAsync
-                    requestUrl={`${apiUrl.user.playlists}admin`}
-                    hideViews={!PageStore.get('config-media-item').displayViews}
-                    hideAuthor={!PageStore.get('config-media-item').displayAuthor}
-                    hideDate={!PageStore.get('config-media-item').displayPublishDate}/>
-                </MediaListRow>
-                
-                
                 {PageStore.get('config-enabled').pages.recommended &&
                   PageStore.get('config-enabled').pages.recommended.enabled && (
                     <MediaListRow
@@ -163,6 +150,18 @@ export const HomePage: React.FC<HomePageProps> = ({
                       />
                     </MediaListRow>
                   )}
+
+                <MediaListRow
+                  title="剧集"
+                  style={undefined}
+                  viewAllLink={undefined}>
+
+                  <LazyLoadItemListAsync
+                    requestUrl={`${apiUrl.user.playlists}admin`}
+                    hideViews={!PageStore.get('config-media-item').displayViews}
+                    hideAuthor={!PageStore.get('config-media-item').displayAuthor}
+                    hideDate={!PageStore.get('config-media-item').displayPublishDate}/>
+                </MediaListRow>
 
                 <MediaListRow
                   title={latest_title}
