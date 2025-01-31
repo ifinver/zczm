@@ -14,6 +14,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import './nav.css';
 import { Autoplay, Navigation } from 'swiper/modules';
+import { LazyLoadItemListAsync } from '../components/item-list/LazyLoadItemListAsync';
 
 const EmptyMedia: React.FC = ({}) => {
   return (
@@ -79,6 +80,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       .then((data) => setNavItems(data));
   }, []);
 
+
   return (
     <Page id={id}>
 
@@ -132,6 +134,19 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </MediaListRow>
                   )}
 
+                <MediaListRow
+                  title="剧集"
+                  style={undefined}
+                  viewAllLink={undefined}>
+
+                  <LazyLoadItemListAsync
+                    requestUrl={`${apiUrl.user.playlists}admin`}
+                    hideViews={!PageStore.get('config-media-item').displayViews}
+                    hideAuthor={!PageStore.get('config-media-item').displayAuthor}
+                    hideDate={!PageStore.get('config-media-item').displayPublishDate}/>
+                </MediaListRow>
+                
+                
                 {PageStore.get('config-enabled').pages.recommended &&
                   PageStore.get('config-enabled').pages.recommended.enabled && (
                     <MediaListRow
