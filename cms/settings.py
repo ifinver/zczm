@@ -473,7 +473,7 @@ if os.environ.get("TESTING"):
 
 try:
     # keep a local_settings.py file for local overrides
-    from .local_settings import *  # noqa
+    from .local_settings_backup import *  # noqa
 
     # ALLOWED_HOSTS needs a url/ip
     ALLOWED_HOSTS.append(FRONTEND_HOST.replace("http://", "").replace("https://", ""))

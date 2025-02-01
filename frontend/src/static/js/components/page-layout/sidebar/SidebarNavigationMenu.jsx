@@ -102,14 +102,14 @@ export function SidebarNavigationMenu() {
       });
     }
 
-    if (PageStore.get('config-enabled').pages.members && PageStore.get('config-enabled').pages.members.enabled) {
-      items.push({
-        link: links.members,
-        icon: 'people',
-        text: translateString("Members"),
-        className: 'nav-item-members',
-      });
-    }
+    // if (PageStore.get('config-enabled').pages.members && PageStore.get('config-enabled').pages.members.enabled) {
+    //   items.push({
+    //     link: links.members,
+    //     icon: 'people',
+    //     text: translateString("Members"),
+    //     className: 'nav-item-members',
+    //   });
+    // }
 
     const extraItems = PageStore.get('config-contents').sidebar.mainMenuExtra.items;
 
