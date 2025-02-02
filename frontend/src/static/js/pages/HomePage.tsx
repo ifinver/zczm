@@ -86,7 +86,8 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* <Banner /> */}
       {navItems.length > 0 && (
-        <div id="navbar-container">
+        <div className="items-list-ver media-list-wrapper">
+          <div id="navbar-container" className='media-list-row'>
           <Swiper
             modules={[Navigation, Autoplay]}
             loop={true} // Enable infinite loop
@@ -110,6 +111,8 @@ export const HomePage: React.FC<HomePageProps> = ({
             ))}
           </Swiper>
         </div>
+        </div>
+        
       )}
 
       <LinksConsumer>
