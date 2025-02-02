@@ -84,7 +84,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   return (
     <Page id={id}>
 
-      <Banner />
+      {/* <Banner /> */}
       {navItems.length > 0 && (
         <div id="navbar-container">
           <Swiper
