@@ -3,13 +3,11 @@
     position: relative;
     background-color: #f8f9fa;
     overflow: hidden;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    margin-top: 20px;
-    margin-bottom: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    border-bottom: 1px solid #e9e4e4;
   }
   
   /* Swiper 滑块内容样式 */
