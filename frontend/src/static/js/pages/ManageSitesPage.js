@@ -28,7 +28,7 @@ export const ManageSitesPage = ({ title }) => {
       withCredentials: true,
     })
     .then(response => {
-      // 假设接口返回的数据格式为 { domains: [...] }
+      // 后端返回的数据格式为 { domains: [ {domain, ctime}, ... ] }
       setSites(response.data.domains || []);
     })
     .catch(error => {
@@ -37,15 +37,14 @@ export const ManageSitesPage = ({ title }) => {
     });
   };
 
-  // 切换站点的选中状态
-  const toggleSelectSite = (site) => {
-    if (selectedSites.includes(site)) {
-      setSelectedSites(selectedSites.filter(item => item !== site));
+  const toggleSelectSite = (domain) => {
+    if (selectedSites.includes(domain)) {
+      setSelectedSites(selectedSites.filter(item => item !== domain));
     } else {
-      setSelectedSites([...selectedSites, site]);
+      setSelectedSites([...selectedSites, domain]);
     }
   };
-
+  
   // 批量删除选中的站点
   const handleDeleteSelected = () => {
     if (selectedSites.length === 0) {
@@ -117,7 +116,6 @@ export const ManageSitesPage = ({ title }) => {
     <div style={{ margin: 'auto', padding: '24px', position: 'relative' }}>
       <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>{title}</h1>
 
-      {/* 错误提示 */}
       {errorMessage && (
         <div style={{
           position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
@@ -161,28 +159,33 @@ export const ManageSitesPage = ({ title }) => {
         >
           删除选中
         </button>
+        <span>（不用的站点要及时删除以节省算力和资源）</span>
       </div>
 
       {/* 显示站点列表，每个站点带有复选框 */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start' }}>
-        {sites.map(site => (
-          <div key={site} style={{
-            border: '1px solid #e5e7eb',
-            borderRadius: '4px',
-            padding: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            minWidth: '200px'
-          }}>
-            <input
-              type="checkbox"
-              checked={selectedSites.includes(site)}
-              onChange={() => toggleSelectSite(site)}
-              style={{ marginRight: '8px' }}
-            />
-            <span>{site}</span>
-          </div>
-        ))}
+        {sites.map(site => {
+          // 将 Unix 时间戳转换为本地时间字符串（单位转换为毫秒）
+          const formattedTime = new Date(site.ctime * 1000).toLocaleString();
+          return (
+            <div key={site.domain} style={{
+              border: '1px solid #e5e7eb',
+              borderRadius: '4px',
+              padding: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              minWidth: '200px'
+            }}>
+              <input
+                type="checkbox"
+                checked={selectedSites.includes(site.domain)}
+                onChange={() => toggleSelectSite(site.domain)}
+                style={{ marginRight: '8px' }}
+              />
+              <span>{site.domain} ({formattedTime})</span>
+            </div>
+          );
+        })}
       </div>
 
       {/* 新域名绑定对话框 */}
