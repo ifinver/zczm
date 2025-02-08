@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 from drf_yasg import openapi as openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -258,7 +259,253 @@ class PopDetail(APIView):
                 {"msg": "服务器内部错误", "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-      
+
+NGINX_NUMBER_SITES_DIR = "/etc/nginx/sites-enabled/numbers/" 
+class NumberSites(APIView):
+    """查看和管理当前绑定的数字域名"""
+
+    permission_classes = (IsMediacmsEditor,)
+    parser_classes = (JSONParser,)
+
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Manage'],
+        operation_summary='Get all binded sites',
+        operation_description='查看所有已绑定的数字域名',
+    )
+    def get(self, request, format=None):
+        """
+        获取目录 /etc/nginx/sites-enabled/numbers/ 下所有文件名，
+        并以数组的形式返回给客户端
+        """
+        try:
+            # 获取目录中的所有文件/目录名称
+            items = os.listdir(NGINX_NUMBER_SITES_DIR)
+            # 过滤出文件（如果目录下可能存在子目录，可以过滤掉）
+            files = [item for item in items if os.path.isfile(os.path.join(NGINX_NUMBER_SITES_DIR, item))]
+            return Response({"domains": files}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"msg": f"无法读取目录: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @swagger_auto_schema(
+        manual_parameters=[],
+        tags=['Manage'],
+        operation_summary='delete some sites',
+        operation_description='删除指定域名并重启nginx',
+    )
+    def delete(self, request, format=None):
+        """
+        根据传入的域名数组删除对应的配置文件，
+        删除成功后调用 "nginx -s reload" 重启 nginx 使配置生效
+        请求参数示例：
+            {
+                "domains": ["abc.xyz", "def.com"]
+            }
+        返回删除成功和失败的详细信息。
+        """
+        domains = request.data.get("domains")
+        if not domains or not isinstance(domains, list) or len(domains) == 0:
+            return Response(
+                {"msg": "请传入一个域名数组"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        deleted_domains = []
+        failed_domains = []
+
+        for domain in domains:
+            # 基本校验：域名不能为空字符串
+            if not isinstance(domain, str) or domain.strip() == "":
+                failed_domains.append({
+                    "domain": domain,
+                    "error": "无效的域名"
+                })
+                continue
+
+            file_path = os.path.join(NGINX_NUMBER_SITES_DIR, domain)
+            if not os.path.exists(file_path):
+                failed_domains.append({
+                    "domain": domain,
+                    "error": "对应的配置文件不存在"
+                })
+                continue
+
+            try:
+                os.remove(file_path)
+                deleted_domains.append(domain)
+            except Exception as e:
+                failed_domains.append({
+                    "domain": domain,
+                    "error": f"删除失败: {str(e)}"
+                })
+
+        # 如果至少有一个文件被成功删除，则尝试重载 nginx 配置
+        if deleted_domains:
+            try:
+                result_reload = subprocess.run(
+                    ["nginx", "-s", "reload"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+                if result_reload.returncode != 0:
+                    error_msg = result_reload.stderr.strip() or result_reload.stdout.strip()
+                    return Response(
+                        {"msg": f"nginx 重载失败: {error_msg}"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+            except Exception as e:
+                return Response(
+                    {"msg": f"执行 nginx 重载命令失败: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            # 返回部分或全部删除成功的信息
+            if failed_domains:
+                return Response(
+                    {
+                        "msg": "部分域名删除失败，但 nginx 已重载",
+                        "deleted": deleted_domains,
+                        "failed": failed_domains
+                    },
+                    status=status.HTTP_207_MULTI_STATUS  # 部分成功
+                )
+            else:
+                return Response(
+                    {
+                        "msg": "删除成功，配置已生效！",
+                        "deleted": deleted_domains
+                    },
+                    status=status.HTTP_200_OK
+                )
+        else:
+            # 如果没有任何文件被删除，则直接返回失败信息
+            return Response(
+                {
+                    "msg": "没有删除任何域名配置",
+                    "failed": failed_domains
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="id", in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER, required=True, description="三退申请的 ID"
+            ),
+        ],
+        tags=['Manage'],
+        operation_summary='Mark Santui Application as Completed',
+        operation_description='将指定三退申请标记为已完成，并记录完成时间',
+    )
+    def post(self, request, format=None):
+        """增加绑定域名"""
+
+        domain = request.data.get("domain")
+        if not domain or domain.strip() == "":
+            return Response({"msg": "域名必填"}, status=status.HTTP_400_BAD_REQUEST)
+        if domain.count(".") != 1:
+            return Response(
+                {"msg": "域名写错了，只能包含一个小数点，不需要写前缀"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # 构造 nginx 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
+        config_content = f"""
+server {{
+    listen 80;
+    listen [::]:80;
+    server_name {domain} *.{domain}; 
+
+    if ($http_x_forwarded_proto != "https") {{
+        return 301 https://$host$request_uri;
+    }}
+
+    gzip on;
+    access_log /var/log/nginx/mediacms.io.access.log;
+
+    error_log  /var/log/nginx/mediacms.io.error.log  warn;
+
+    location /static {{
+        alias /home/mediacms.io/mediacms/static ;
+    }}
+
+    location /media/original {{
+        alias /home/mediacms.io/mediacms/media_files/original;
+    }}
+
+    location /media {{
+        alias /home/mediacms.io/mediacms/media_files ;
+    }}
+
+    location / {{
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+
+        include /etc/nginx/sites-enabled/uwsgi_params;
+        uwsgi_pass 127.0.0.1:9000;
+    }}
+}}"""
+
+        config_path = os.path.join(NGINX_NUMBER_SITES_DIR, domain)
+        config_path = os.path.normpath(config_path)
+        try:
+            with open(config_path, "w") as f:
+                f.write(config_content)
+        except Exception as e:
+            return Response(
+                {"msg": f"写入nginx配置文件失败: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # 调用 nginx -t 测试配置文件
+        try:
+            result_test = subprocess.run(
+                ["nginx", "-t"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if result_test.returncode != 0:
+                # 如果 stderr 没有内容，则尝试从 stdout 中提取错误信息
+                error_msg = result_test.stderr.strip() or result_test.stdout.strip()
+                return Response(
+                    {"msg": f"nginx配置测试失败: {error_msg}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return Response(
+                {"msg": f"执行nginx测试命令失败: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        # 调用 nginx -s reload 重启 nginx
+        try:
+            result_reload = subprocess.run(
+                ["nginx", "-s", "reload"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if result_reload.returncode != 0:
+                error_msg = result_reload.stderr.strip() or result_reload.stdout.strip()
+                return Response(
+                    {"msg": f"nginx重启失败: {error_msg}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        except Exception as e:
+            return Response(
+                {"msg": f"执行nginx重启命令失败: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response({"msg": "绑定成功，已生效！"}, status=status.HTTP_200_OK)
+
 class Santui(APIView):
     """查看和操作三退申请"""
 
