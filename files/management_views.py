@@ -275,15 +275,21 @@ class NumberSites(APIView):
     )
     def get(self, request, format=None):
         """
-        获取目录 /etc/nginx/sites-enabled/numbers/ 下所有文件名，
-        并以数组的形式返回给客户端
+        获取目录 /etc/nginx/sites-numbers/ 下所有文件名及其创建时间戳，
+        按创建时间排序（最新创建的在最下面），并返回给客户端。
         """
         try:
-            # 获取目录中的所有文件/目录名称
             items = os.listdir(NGINX_NUMBER_SITES_DIR)
-            # 过滤出文件（如果目录下可能存在子目录，可以过滤掉）
-            files = [item for item in items if os.path.isfile(os.path.join(NGINX_NUMBER_SITES_DIR, item))]
-            return Response({"domains": files}, status=status.HTTP_200_OK)
+            domains = []
+            for item in items:
+                file_path = os.path.join(NGINX_NUMBER_SITES_DIR, item)
+                if os.path.isfile(file_path):
+                    # 获取文件创建时间戳（单位秒）
+                    ctime = os.path.getctime(file_path)
+                    domains.append({"domain": item, "ctime": ctime})
+            # 按创建时间升序排序（最新的在最后）
+            domains.sort(key=lambda x: x["ctime"])
+            return Response({"domains": domains}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
                 {"msg": f"无法读取目录: {str(e)}"},
