@@ -32,6 +32,8 @@ export const ManageSitesPage = ({ title }) => {
   const [newDomain, setNewDomain] = useState('');
   // 对话框中的错误信息
   const [modalError, setModalError] = useState(null);
+  // 控制 loading 状态，绑定新域名时显示加载效果
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchSites();
@@ -62,7 +64,7 @@ export const ManageSitesPage = ({ title }) => {
       setSelectedSites([...selectedSites, domain]);
     }
   };
-  
+
   // 批量删除选中的站点
   const handleDeleteSelected = () => {
     if (selectedSites.length === 0) {
@@ -103,13 +105,14 @@ export const ManageSitesPage = ({ title }) => {
     setModalError(null);
   };
 
-  // 处理绑定新域名的表单提交
+  // 处理绑定新域名的表单提交，同时显示 loading 效果
   const handleNewDomainSubmit = (e) => {
     e.preventDefault();
     if (!newDomain.trim()) {
       setModalError('域名不能为空');
       return;
     }
+    setIsLoading(true);
     axios.post('/api/v1/sites', { domain: newDomain.trim() }, {
       headers: {
         'X-CSRFToken': csrfToken(),
@@ -127,6 +130,9 @@ export const ManageSitesPage = ({ title }) => {
       } else {
         setModalError('绑定新域名失败');
       }
+    })
+    .finally(() => {
+      setIsLoading(false);
     });
   };
 
@@ -183,7 +189,7 @@ export const ManageSitesPage = ({ title }) => {
       {/* 显示站点列表，每个站点带有复选框 */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start' }}>
         {sites.map(site => {
-          // 将 Unix 时间戳转换为本地时间字符串（单位转换为毫秒）
+          // 将 Unix 时间戳转换为指定格式
           const formattedTime = formatDateTime(site.ctime);
           return (
             <div key={site.domain} style={{
@@ -234,6 +240,7 @@ export const ManageSitesPage = ({ title }) => {
                     borderRadius: '4px',
                     border: '1px solid #d1d5db'
                   }}
+                  disabled={isLoading}
                 />
               </div>
               {modalError && (
@@ -253,6 +260,7 @@ export const ManageSitesPage = ({ title }) => {
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
+                  disabled={isLoading}
                 >
                   取消
                 </button>
@@ -266,12 +274,44 @@ export const ManageSitesPage = ({ title }) => {
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
+                  disabled={isLoading}
                 >
                   绑定
                 </button>
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Loading 效果：全屏遮罩及居中旋转图标 */}
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 200,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <div style={{
+            border: '8px solid #f3f3f3',
+            borderTop: '8px solid #3498db',
+            borderRadius: '50%',
+            width: '60px',
+            height: '60px',
+            animation: 'spin 2s linear infinite'
+          }}></div>
+          {/* 定义旋转动画 */}
+          <style>
+            {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
         </div>
       )}
     </div>
