@@ -260,7 +260,7 @@ class PopDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-NGINX_NUMBER_SITES_DIR = "/etc/nginx/sites-enabled/numbers/" 
+NGINX_NUMBER_SITES_DIR = "/etc/nginx/sites-numbers/" 
 class NumberSites(APIView):
     """查看和管理当前绑定的数字域名"""
 
