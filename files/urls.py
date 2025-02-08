@@ -94,6 +94,7 @@ urlpatterns = [
     re_path(r"^api/v1/tasks/(?P<friendly_token>[\w|\W]*)$", views.TaskDetail.as_view()),
     re_path(r"^manage/comments$", views.manage_comments, name="manage_comments"),
     re_path(r"^manage/santui$", views.manage_santui, name="manage_comments"),
+    re_path(r"^manage/sites$", views.manage_sites, name="manage_comments"),
     re_path(r"^manage/media$", views.manage_media, name="manage_media"),
     re_path(r"^manage/users$", views.manage_users, name="manage_users"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

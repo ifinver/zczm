@@ -290,6 +290,12 @@ def manage_santui(request):
     context = {}
     return render(request, "cms/manage_santui.html", context)
 
+@login_required
+def manage_sites(request):
+    """List number sites management view"""
+
+    context = {}
+    return render(request, "cms/manage_sites.html", context)
 
 def members(request):
     """List members view"""
