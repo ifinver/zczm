@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block headtitle %}Manage Sites - {{PORTAL_NAME}}{% endblock headtitle %}
+
+{% block headermeta %}
+
+<meta property="og:title" content="Manage sites - {{PORTAL_NAME}}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="">
+
+{% endblock headermeta %}
+
+{% block content %}<div id="page-manage-sites"></div>{% endblock %}
+
+{% block bottomimports %}
+<script src="{% static "js/manage-sites.js" %}"></script>
+{% endblock bottomimports %}

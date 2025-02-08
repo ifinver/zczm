@@ -163,27 +163,27 @@ export function SidebarNavigationMenu() {
   function UserMenuSection() {
     const items = [];
 
-    if (PageStore.get('config-enabled').pages.history && PageStore.get('config-enabled').pages.history.enabled) {
-      items.push({
-        link: links.user.history,
-        icon: 'history',
-        text: translateString("History"),
-        className: 'nav-item-history',
-      });
-    }
+    // if (PageStore.get('config-enabled').pages.history && PageStore.get('config-enabled').pages.history.enabled) {
+    //   items.push({
+    //     link: links.user.history,
+    //     icon: 'history',
+    //     text: translateString("History"),
+    //     className: 'nav-item-history',
+    //   });
+    // }
 
-    if (
-      userCan.likeMedia &&
-      PageStore.get('config-enabled').pages.liked &&
-      PageStore.get('config-enabled').pages.liked.enabled
-    ) {
-      items.push({
-        link: links.user.liked,
-        icon: 'thumb_up',
-        text: translateString("Liked media"),
-        className: 'nav-item-liked',
-      });
-    }
+    // if (
+    //   userCan.likeMedia &&
+    //   PageStore.get('config-enabled').pages.liked &&
+    //   PageStore.get('config-enabled').pages.liked.enabled
+    // ) {
+    //   items.push({
+    //     link: links.user.liked,
+    //     icon: 'thumb_up',
+    //     text: translateString("Liked media"),
+    //     className: 'nav-item-liked',
+    //   });
+    // }
 
     return items.length ? <NavigationMenuList key="user" items={formatItems(items)} /> : null;
   }
@@ -191,26 +191,26 @@ export function SidebarNavigationMenu() {
   function CustomMenuSection() {
     const items = [];
 
-    items.push({
-      link: '/about',
-      icon: 'contact_support',
-      text: translateString("About"),
-      className: 'nav-item-about',
-    });
+    // items.push({
+    //   link: '/about',
+    //   icon: 'contact_support',
+    //   text: translateString("About"),
+    //   className: 'nav-item-about',
+    // });
 
-      items.push({
-      link: '/tos',
-      icon: 'description',
-      text: translateString("Terms"),
-      className: 'nav-item-terms',
-    });
+    //   items.push({
+    //   link: '/tos',
+    //   icon: 'description',
+    //   text: translateString("Terms"),
+    //   className: 'nav-item-terms',
+    // });
 
-    items.push({
-      link: '/contact',
-      icon: 'alternate_email',
-      text: translateString("Contact"),
-      className: 'nav-item-contact',
-    });
+    // items.push({
+    //   link: '/contact',
+    //   icon: 'alternate_email',
+    //   text: translateString("Contact"),
+    //   className: 'nav-item-contact',
+    // });
 
     items.push({
       link: '/setlanguage',
@@ -232,6 +232,13 @@ export function SidebarNavigationMenu() {
         text: '三退申请',
         className: 'nav-item-manage-santui',
       });
+
+      items.push({
+        link: links.manage.sites,
+        icon: 'miscellaneous_services',
+        text: '免翻域名',
+        className: 'nav-item-manage-sites',
+      });
       
       items.push({
         link: links.manage.media,
@@ -241,14 +248,14 @@ export function SidebarNavigationMenu() {
       });
     }
 
-    if (userCan.manageUsers) {
-      items.push({
-        link: links.manage.users,
-        icon: 'miscellaneous_services',
-        text: translateString("Manage users"),
-        className: 'nav-item-manage-users',
-      });
-    }
+    // if (userCan.manageUsers) {
+    //   items.push({
+    //     link: links.manage.users,
+    //     icon: 'miscellaneous_services',
+    //     text: translateString("Manage users"),
+    //     className: 'nav-item-manage-users',
+    //   });
+    // }
 
     if (userCan.manageComments) {
       items.push({

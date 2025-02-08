@@ -69,6 +69,7 @@ export function config(glbl) {
       users: !glbl.user.is.anonymous ? glbl.url.manageUsers : '',
       comments: !glbl.user.is.anonymous ? glbl.url.manageComments : '',
       santui: !glbl.user.is.anonymous ? glbl.url.manageSantui : '',
+      sites: !glbl.user.is.anonymous ? glbl.url.manageSites : '',
     },
   });
 

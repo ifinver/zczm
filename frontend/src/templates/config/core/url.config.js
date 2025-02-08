@@ -30,4 +30,5 @@ module.exports = {
   manageUsers: './manage-users.html',
   manageComments: './manage-comments.html',
   manageSantui: './manage-santui.html',
+  manageSites: './manage-sites.html',
 };
