@@ -1,6 +1,5 @@
 import json
 import os
-import getpass
 import subprocess
 from drf_yasg import openapi as openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -284,11 +283,7 @@ class NumberSites(APIView):
             items = os.listdir(NGINX_NUMBER_SITES_DIR)
             # 过滤出文件（如果目录下可能存在子目录，可以过滤掉）
             files = [item for item in items if os.path.isfile(os.path.join(NGINX_NUMBER_SITES_DIR, item))]
-            username = getpass.getuser()
-            return Response({
-                "domains": files,
-                "username": username
-            }, status=status.HTTP_200_OK)
+            return Response({"domains": files}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
                 {"msg": f"无法读取目录: {str(e)}"},
@@ -351,7 +346,7 @@ class NumberSites(APIView):
         if deleted_domains:
             try:
                 result_reload = subprocess.run(
-                    ["nginx", "-s", "reload"],
+                    ["sudo", "nginx", "-s", "reload"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
@@ -471,7 +466,7 @@ server {{
         # 调用 nginx -t 测试配置文件
         try:
             result_test = subprocess.run(
-                ["nginx", "-t"],
+                ["sudo", "nginx", "-t"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -492,7 +487,7 @@ server {{
         # 调用 nginx -s reload 重启 nginx
         try:
             result_reload = subprocess.run(
-                ["nginx", "-s", "reload"],
+                ["sudo", "nginx", "-s", "reload"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
