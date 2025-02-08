@@ -3,6 +3,24 @@ import PropTypes from 'prop-types';
 import { csrfToken } from '../utils/helpers';
 import axios from 'axios';
 
+// 定义格式化日期时间的工具函数
+function formatDateTime(timestamp) {
+  const date = new Date(timestamp * 1000);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // 注意月份从0开始，所以要加1
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  // 小时、分钟和秒不足两位时进行补零处理
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+
+  return `${year}年${month}月${day}日 ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
 export const ManageSitesPage = ({ title }) => {
   const [sites, setSites] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -166,7 +184,7 @@ export const ManageSitesPage = ({ title }) => {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start' }}>
         {sites.map(site => {
           // 将 Unix 时间戳转换为本地时间字符串（单位转换为毫秒）
-          const formattedTime = new Date(site.ctime * 1000).toLocaleString();
+          const formattedTime = formatDateTime(site.ctime);
           return (
             <div key={site.domain} style={{
               border: '1px solid #e5e7eb',
@@ -182,7 +200,7 @@ export const ManageSitesPage = ({ title }) => {
                 onChange={() => toggleSelectSite(site.domain)}
                 style={{ marginRight: '8px' }}
               />
-              <span>{site.domain} ({formattedTime})</span>
+              <span>{site.domain} &nbsp;&nbsp; ({formattedTime})</span>
             </div>
           );
         })}
