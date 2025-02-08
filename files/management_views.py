@@ -1,5 +1,6 @@
 import json
 import os
+import getpass
 import subprocess
 from drf_yasg import openapi as openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -283,7 +284,11 @@ class NumberSites(APIView):
             items = os.listdir(NGINX_NUMBER_SITES_DIR)
             # 过滤出文件（如果目录下可能存在子目录，可以过滤掉）
             files = [item for item in items if os.path.isfile(os.path.join(NGINX_NUMBER_SITES_DIR, item))]
-            return Response({"domains": files}, status=status.HTTP_200_OK)
+            username = getpass.getuser()
+            return Response({
+                "domains": files,
+                "username": username
+            }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
                 {"msg": f"无法读取目录: {str(e)}"},
