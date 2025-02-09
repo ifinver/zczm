@@ -409,6 +409,7 @@ class NumberSites(APIView):
     )
     def post(self, request, format=None):
         """增加绑定域名"""
+        return Response({"msg": "绑定成功，已生效！23232323"}, status=status.HTTP_200_OK)
 
         domain = request.data.get("domain")
         if not domain or domain.strip() == "":
@@ -572,7 +573,6 @@ server {{
     }}
 }}
 """
-        return Response({"msg": "绑定成功，已生效！23232323"}, status=status.HTTP_200_OK)
         config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
