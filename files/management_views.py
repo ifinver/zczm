@@ -410,6 +410,11 @@ class NumberSites(APIView):
     def post(self, request, format=None):
         """增加绑定域名"""
 
+        return Response(
+                {"msg": f"写入openresty配置文件失败23423"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         domain = request.data.get("domain")
         if not domain or domain.strip() == "":
             return Response({"msg": "域名必填"}, status=status.HTTP_400_BAD_REQUEST)
@@ -572,10 +577,6 @@ server {{
     }}
 }}
 """
-        return Response(
-                {"msg": f"写入openresty配置文件失败23423"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
         config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
