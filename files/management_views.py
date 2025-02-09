@@ -485,7 +485,7 @@ server {{
                 s = s:gsub("&", "&amp;")
                 s = s:gsub("<", "&lt;")
                 s = s:gsub(">", "&gt;")
-                s = s:gsub("\"", "&quot;")
+                s = s:gsub('\"', "&quot;")
                 s = s:gsub("'", "&#39;")
                 return s
             end
@@ -544,8 +544,7 @@ server {{
                         "captcha_verified=1; Path=/; HttpOnly; Max-Age=86400",
                         "captcha_numbers=; Path=/; HttpOnly; Max-Age=0"
                     }}
-                    ngx.redirect(return_url)
-                    return
+                    ngx.redirect(return_url); return
                 else
                     ngx.say("<html><head><meta charset='utf-8'><style>")
                     ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }}")
