@@ -572,6 +572,10 @@ server {{
     }}
 }}
 """
+         return Response(
+                {"msg": "域名写错了，只能包含一个小数dfsdfs点，不需要写前缀"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         config_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
