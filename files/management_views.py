@@ -260,7 +260,7 @@ class PopDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-NGINX_NUMBER_SITES_DIR = "/usr/local/openresty/nginx/conf/sites-numbers/" 
+openresty_NUMBER_SITES_DIR = "/usr/local/openresty/openresty/conf/sites-numbers/" 
 class NumberSites(APIView):
     """查看和管理当前绑定的数字域名"""
 
@@ -275,14 +275,14 @@ class NumberSites(APIView):
     )
     def get(self, request, format=None):
         """
-        获取目录 /etc/nginx/sites-numbers/ 下所有文件名及其创建时间戳，
+        获取目录 /etc/openresty/sites-numbers/ 下所有文件名及其创建时间戳，
         按创建时间排序（最新创建的在最下面），并返回给客户端。
         """
         try:
-            items = os.listdir(NGINX_NUMBER_SITES_DIR)
+            items = os.listdir(openresty_NUMBER_SITES_DIR)
             domains = []
             for item in items:
-                file_path = os.path.join(NGINX_NUMBER_SITES_DIR, item)
+                file_path = os.path.join(openresty_NUMBER_SITES_DIR, item)
                 if os.path.isfile(file_path):
                     # 获取文件创建时间戳（单位秒）
                     ctime = os.path.getctime(file_path)
@@ -300,12 +300,12 @@ class NumberSites(APIView):
         manual_parameters=[],
         tags=['Manage'],
         operation_summary='delete some sites',
-        operation_description='删除指定域名并重启nginx',
+        operation_description='删除指定域名并重启openresty',
     )
     def delete(self, request, format=None):
         """
         根据传入的域名数组删除对应的配置文件，
-        删除成功后调用 "nginx -s reload" 重启 nginx 使配置生效
+        删除成功后调用 "openresty -s reload" 重启 openresty 使配置生效
         请求参数示例：
             {
                 "domains": ["abc.xyz", "def.com"]
@@ -331,7 +331,7 @@ class NumberSites(APIView):
                 })
                 continue
 
-            file_path = os.path.join(NGINX_NUMBER_SITES_DIR, domain)
+            file_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
             if not os.path.exists(file_path):
                 failed_domains.append({
                     "domain": domain,
@@ -348,11 +348,11 @@ class NumberSites(APIView):
                     "error": f"删除失败: {str(e)}"
                 })
 
-        # 如果至少有一个文件被成功删除，则尝试重载 nginx 配置
+        # 如果至少有一个文件被成功删除，则尝试重载 openresty 配置
         if deleted_domains:
             try:
                 result_reload = subprocess.run(
-                    ["sudo", "nginx", "-s", "reload"],
+                    ["sudo", "openresty", "-s", "reload"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
@@ -360,12 +360,12 @@ class NumberSites(APIView):
                 if result_reload.returncode != 0:
                     error_msg = result_reload.stderr.strip() or result_reload.stdout.strip()
                     return Response(
-                        {"msg": f"nginx 重载失败: {error_msg}"},
+                        {"msg": f"openresty 重载失败: {error_msg}"},
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR
                     )
             except Exception as e:
                 return Response(
-                    {"msg": f"执行 nginx 重载命令失败: {str(e)}"},
+                    {"msg": f"执行 openresty 重载命令失败: {str(e)}"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
@@ -373,7 +373,7 @@ class NumberSites(APIView):
             if failed_domains:
                 return Response(
                     {
-                        "msg": "部分域名删除失败，但 nginx 已重载",
+                        "msg": "部分域名删除失败，但 openresty 已重载",
                         "deleted": deleted_domains,
                         "failed": failed_domains
                     },
@@ -419,7 +419,7 @@ class NumberSites(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # 构造 nginx 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
+        # 构造 openresty 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
         config_content = f"""
 server {{
     listen 80;
@@ -432,8 +432,8 @@ server {{
     }}
 
     gzip on;
-    access_log /var/log/nginx/mediacms.io.access.log;
-    error_log /var/log/nginx/mediacms.io.error.log warn;
+    access_log /var/log/openresty/mediacms.io.access.log;
+    error_log /var/log/openresty/mediacms.io.error.log warn;
 
     # 全局 Lua 拦截：仅对 Accept 包含 text/html 的请求生效，
     # 对 /captcha 页面本身不拦截，若未通过验证码验证则重定向到 /captcha
@@ -471,7 +471,7 @@ server {{
         add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
 
-        include /usr/local/openresty/nginx/conf/sites-enabled/uwsgi_params;
+        include /usr/local/openresty/openresty/conf/sites-enabled/uwsgi_params;
         uwsgi_pass 127.0.0.1:9000;
     }}
 
@@ -572,21 +572,21 @@ server {{
     }}
 }}
 """
-        config_path = os.path.join(NGINX_NUMBER_SITES_DIR, domain)
+        config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
             with open(config_path, "w") as f:
                 f.write(config_content)
         except Exception as e:
             return Response(
-                {"msg": f"写入nginx配置文件失败: {str(e)}"},
+                {"msg": f"写入openresty配置文件失败: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        # 调用 nginx -t 测试配置文件
+        # 调用 openresty -t 测试配置文件
         try:
             result_test = subprocess.run(
-                ["sudo", "nginx", "-t"],
+                ["sudo", "openresty", "-t"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -595,19 +595,19 @@ server {{
                 # 如果 stderr 没有内容，则尝试从 stdout 中提取错误信息
                 error_msg = result_test.stderr.strip() or result_test.stdout.strip()
                 return Response(
-                    {"msg": f"nginx配置测试失败: {error_msg}"},
+                    {"msg": f"openresty配置测试失败: {error_msg}"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         except Exception as e:
             return Response(
-                {"msg": f"执行nginx测试命令失败: {str(e)}"},
+                {"msg": f"执行openresty测试命令失败: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-        # 调用 nginx -s reload 重启 nginx
+        # 调用 openresty -s reload 重启 openresty
         try:
             result_reload = subprocess.run(
-                ["sudo", "nginx", "-s", "reload"],
+                ["sudo", "openresty", "-s", "reload"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -615,12 +615,12 @@ server {{
             if result_reload.returncode != 0:
                 error_msg = result_reload.stderr.strip() or result_reload.stdout.strip()
                 return Response(
-                    {"msg": f"nginx重启失败: {error_msg}"},
+                    {"msg": f"openresty重启失败: {error_msg}"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         except Exception as e:
             return Response(
-                {"msg": f"执行nginx重启命令失败: {str(e)}"},
+                {"msg": f"执行openresty重启命令失败: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
