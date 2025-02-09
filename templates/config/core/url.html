@@ -18,7 +18,7 @@ MediaCMS.url = {
     /* Profile/account edit pages */
     editProfile: "{{user.edit_url}}",
     {% if request.user.is_authenticated %}
-    signout: "/accounts/logout/",
+    signout: './signout.html',
     editChannel: "{{user.default_channel_edit_url}}",
     changePassword: "/accounts/password/change/",
     /* Administration pages */
@@ -30,7 +30,7 @@ MediaCMS.url = {
     {% if IS_MEDIACMS_EDITOR %}manageSantui: "/manage/santui",{% endif %}
     {% if IS_MEDIACMS_EDITOR %}manageSites: "/manage/sites",{% endif %}
     {% else %}
-    signin: "/accounts/login/",
+    signin: './signin.html',
     register: "/accounts/signup/",
     {% endif %}
 };
