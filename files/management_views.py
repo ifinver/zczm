@@ -260,7 +260,7 @@ class PopDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-openresty_NUMBER_SITES_DIR = "/usr/local/openresty/nginx/conf/sites-numbers/" 
+OPENRESTY_NUMBER_SITES_DIR = "/usr/local/openresty/nginx/conf/sites-numbers/" 
 class NumberSites(APIView):
     """查看和管理当前绑定的数字域名"""
 
@@ -279,10 +279,10 @@ class NumberSites(APIView):
         按创建时间排序（最新创建的在最下面），并返回给客户端。
         """
         try:
-            items = os.listdir(openresty_NUMBER_SITES_DIR)
+            items = os.listdir(OPENRESTY_NUMBER_SITES_DIR)
             domains = []
             for item in items:
-                file_path = os.path.join(openresty_NUMBER_SITES_DIR, item)
+                file_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, item)
                 if os.path.isfile(file_path):
                     # 获取文件创建时间戳（单位秒）
                     ctime = os.path.getctime(file_path)
@@ -331,7 +331,7 @@ class NumberSites(APIView):
                 })
                 continue
 
-            file_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
+            file_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, domain)
             if not os.path.exists(file_path):
                 failed_domains.append({
                     "domain": domain,
@@ -572,11 +572,7 @@ server {{
     }}
 }}
 """
-        return Response(
-                {"msg": "域名写错了，只能包含一个小数点ssss，不需要写前缀"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
+        config_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
             with open(config_path, "w") as f:
