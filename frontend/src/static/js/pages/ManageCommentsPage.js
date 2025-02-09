@@ -1,17 +1,124 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactJson from 'react-json-view'; // 用于美观的 JSON 编辑
 import { PageActions } from '../utils/actions/';
-import { csrfToken,postRequest } from '../utils/helpers';
+import { csrfToken, postRequest } from '../utils/helpers';
 import { Page } from './_Page';
+
+/**
+ * 辅助函数：根据给定的路径更新 JSON 对象
+ * 例如：path = ['a','b'] 表示更新 obj.a.b 为 value
+ */
+function updateJsonAtPath(obj, path, value) {
+  if (path.length === 0) return value;
+  const [key, ...rest] = path;
+  return {
+    ...obj,
+    [key]: rest.length === 0 ? value : updateJsonAtPath(obj[key] || {}, rest, value),
+  };
+}
+
+/**
+ * JsonEditor 组件
+ * 递归地根据传入的 data 对象生成表单控件，
+ * onChange(path, newValue) 用来上报某个字段的变更
+ */
+function JsonEditor({ data, onChange, path = [] }) {
+  if (typeof data !== 'object' || data === null) {
+    // 如果 data 不是对象，则什么也不渲染
+    return null;
+  }
+  return (
+    <div>
+      {Object.entries(data).map(([key, val]) => {
+        const currentPath = [...path, key];
+        // 如果值为对象且非数组，则递归生成子区域
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          return (
+            <div
+              key={currentPath.join('.')}
+              style={{
+                marginLeft: '20px',
+                marginBottom: '10px',
+                border: '1px solid #ccc',
+                padding: '10px',
+              }}
+            >
+              <h4>{key}</h4>
+              <JsonEditor data={val} onChange={onChange} path={currentPath} />
+            </div>
+          );
+        }
+        // 如果值为数组，采用 textarea 展示 JSON 字符串
+        if (Array.isArray(val)) {
+          return (
+            <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'block', fontWeight: 'bold' }}>{key}:</label>
+              <textarea
+                style={{ width: '100%', height: '60px' }}
+                value={JSON.stringify(val)}
+                onChange={(e) => {
+                  let newVal;
+                  try {
+                    newVal = JSON.parse(e.target.value);
+                  } catch (err) {
+                    newVal = e.target.value;
+                  }
+                  onChange(currentPath, newVal);
+                }}
+              />
+            </div>
+          );
+        }
+        // 针对简单类型，选择合适的 input 类型
+        let inputType = 'text';
+        if (typeof val === 'number') {
+          inputType = 'number';
+        } else if (typeof val === 'boolean') {
+          inputType = 'checkbox';
+        }
+        return (
+          <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
+            <label style={{ marginRight: '10px', fontWeight: 'bold' }}>{key}:</label>
+            {inputType === 'checkbox' ? (
+              <input
+                type="checkbox"
+                checked={val}
+                onChange={(e) => onChange(currentPath, e.target.checked)}
+              />
+            ) : (
+              <input
+                type={inputType}
+                value={val}
+                onChange={(e) => {
+                  let newVal = e.target.value;
+                  if (inputType === 'number') {
+                    // 如果输入为空，则保持空字符串，否则转换为数字
+                    newVal = e.target.value === '' ? '' : parseFloat(e.target.value);
+                  }
+                  onChange(currentPath, newVal);
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+JsonEditor.propTypes = {
+  data: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  path: PropTypes.array,
+};
 
 export class ManageCommentsPage extends Page {
   constructor(props) {
     super(props, 'manage-comments');
 
     this.state = {
-      modifiedNavContent: [], 
-      modifiedPopContent: [], 
+      modifiedNavContent: {},
+      modifiedPopContent: {},
     };
 
     this.requestNavUrl = '/api/v1/manage_nav';
@@ -23,7 +130,7 @@ export class ManageCommentsPage extends Page {
       .then((response) => response.json())
       .then((data) => this.setState({ modifiedNavContent: data }));
 
-      fetch('/static/pop.json')
+    fetch('/static/pop.json')
       .then((response) => response.json())
       .then((data) => this.setState({ modifiedPopContent: data }));
   }
@@ -31,7 +138,8 @@ export class ManageCommentsPage extends Page {
   handleModifyNav = () => {
     const { modifiedNavContent } = this.state;
 
-    postRequest(this.requestNavUrl, 
+    postRequest(
+      this.requestNavUrl,
       { detail: JSON.stringify(modifiedNavContent) },
       {
         headers: {
@@ -43,24 +151,24 @@ export class ManageCommentsPage extends Page {
         if (response && response.data && response.data.msg === 'ok') {
           PageActions.addNotification('导航配置修改成功.', '提示');
         } else {
-          if(response && response.msg){
+          if (response && response.msg) {
             PageActions.addNotification(response.msg, '出錯了');
-          }else{
+          } else {
             PageActions.addNotification('导航配置修改失败.', '出錯了');
           }
-          
         }
       },
       () => {
         PageActions.addNotification('导航配置修改时出错.', '错误');
       }
-    )
+    );
   };
 
   handleModifyPop = () => {
     const { modifiedPopContent } = this.state;
 
-    postRequest(this.requestPopUrl, 
+    postRequest(
+      this.requestPopUrl,
       { detail: JSON.stringify(modifiedPopContent) },
       {
         headers: {
@@ -72,9 +180,9 @@ export class ManageCommentsPage extends Page {
         if (response && response.data && response.data.msg === 'ok') {
           PageActions.addNotification('弹框配置修改成功.', '提示');
         } else {
-          if(response && response.msg){
+          if (response && response.msg) {
             PageActions.addNotification(response.msg, '出錯了');
-          }else{
+          } else {
             PageActions.addNotification('弹框配置修改失败.', '出錯了');
           }
         }
@@ -82,95 +190,39 @@ export class ManageCommentsPage extends Page {
       () => {
         PageActions.addNotification('弹框配置修改时出错.', '错误');
       }
-    )
+    );
   };
 
-  handleNavJsonChange = (edit) => {
-    this.setState({ modifiedNavContent:edit.updated_src });
+  // 当导航栏的 JSON 对象中任意字段修改时调用
+  handleNavFieldChange = (path, value) => {
+    this.setState((prevState) => ({
+      modifiedNavContent: updateJsonAtPath(prevState.modifiedNavContent, path, value),
+    }));
   };
 
-  handlePopJsonChange = (edit) => {
-    this.setState({ modifiedPopContent:edit.updated_src });
+  // 当弹框的 JSON 对象中任意字段修改时调用
+  handlePopFieldChange = (path, value) => {
+    this.setState((prevState) => ({
+      modifiedPopContent: updateJsonAtPath(prevState.modifiedPopContent, path, value),
+    }));
   };
 
   pageContent() {
-    const { modifiedNavContent,modifiedPopContent } = this.state;
+    const { modifiedNavContent, modifiedPopContent } = this.state;
 
     return (
       <div>
         <h1>管理站点</h1>
-        <br/><br/>
+        <br /><br />
         <h3>管理导航栏</h3>
-        <ReactJson
-          src={modifiedNavContent || {}}
-          onEdit={this.handleNavJsonChange}
-          onAdd={this.handleNavJsonChange}
-          onDelete={this.handleNavJsonChange}
-          style={{
-            padding: '20px',
-            backgroundColor: '#1e1e1e', // 设置深色背景
-            borderRadius: '8px',
-            color: '#ffffff', // 默认字体颜色
-          }}
-          displayDataTypes={false}
-          displayObjectSize={false}
-          theme={{
-            base00: "#1e1e1e", // 背景色
-            base01: "#282c34", // 辅助背景色
-            base02: "#2c313c", // 突出背景
-            base03: "#d4d4d4", // 边框色
-            base04: "#d4d4d4", // 数字颜色
-            base05: "#ffffff", // 默认字体颜色
-            base06: "#ffffff", // 标题颜色
-            base07: "#ffffff", // 键的颜色
-            base08: "#569cd6", // 关键字颜色
-            base09: "#dcdcaa", // 数值颜色
-            base0A: "#c586c0", // 函数名颜色
-            base0B: "#6a9955", // 字符串颜色
-            base0C: "#9cdcfe", // URL 颜色
-            base0D: "#4ec9b0", // 对象名颜色
-            base0E: "#c586c0", // 类名颜色
-            base0F: "#d16969", // 错误颜色
-          }}
-        />
+        <JsonEditor data={modifiedNavContent || {}} onChange={this.handleNavFieldChange} />
         <button onClick={this.handleModifyNav} style={{ marginTop: '20px', padding: '10px 20px' }}>
           保存修改
         </button>
 
-        <br/><br/>
+        <br /><br />
         <h3>管理弹框</h3>
-        <ReactJson
-          src={modifiedPopContent || {}}
-          onEdit={this.handlePopJsonChange}
-          onAdd={this.handlePopJsonChange}
-          onDelete={this.handlePopJsonChange}
-          style={{
-            padding: '20px',
-            backgroundColor: '#1e1e1e', // 设置深色背景
-            borderRadius: '8px',
-            color: '#ffffff', // 默认字体颜色
-          }}
-          displayDataTypes={false}
-          displayObjectSize={false}
-          theme={{
-            base00: "#1e1e1e", // 背景色
-            base01: "#282c34", // 辅助背景色
-            base02: "#2c313c", // 突出背景
-            base03: "#d4d4d4", // 边框色
-            base04: "#d4d4d4", // 数字颜色
-            base05: "#ffffff", // 默认字体颜色
-            base06: "#ffffff", // 标题颜色
-            base07: "#ffffff", // 键的颜色
-            base08: "#569cd6", // 关键字颜色
-            base09: "#dcdcaa", // 数值颜色
-            base0A: "#c586c0", // 函数名颜色
-            base0B: "#6a9955", // 字符串颜色
-            base0C: "#9cdcfe", // URL 颜色
-            base0D: "#4ec9b0", // 对象名颜色
-            base0E: "#c586c0", // 类名颜色
-            base0F: "#d16969", // 错误颜色
-          }}
-        />
+        <JsonEditor data={modifiedPopContent || {}} onChange={this.handlePopFieldChange} />
         <button onClick={this.handleModifyPop} style={{ marginTop: '20px', padding: '10px 20px' }}>
           保存修改
         </button>
