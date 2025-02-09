@@ -260,7 +260,7 @@ class PopDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-NGINX_NUMBER_SITES_DIR = "/etc/nginx/sites-numbers/" 
+NGINX_NUMBER_SITES_DIR = "/usr/local/openresty/nginx/conf/sites-numbers/" 
 class NumberSites(APIView):
     """查看和管理当前绑定的数字域名"""
 
@@ -453,7 +453,7 @@ server {{
         add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
 
-        include /etc/nginx/sites-enabled/uwsgi_params;
+        include /usr/local/openresty/nginx/conf/sites-enabled/uwsgi_params;
         uwsgi_pass 127.0.0.1:9000;
     }}
 }}"""
