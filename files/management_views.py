@@ -572,12 +572,12 @@ server {{
     }}
 }}
 """
-        config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
-        config_path = os.path.normpath(config_path)
         return Response(
                 {"msg": "域名写错了，只能包含一个小数点ssss，不需要写前缀"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
+        config_path = os.path.normpath(config_path)
         try:
             with open(config_path, "w") as f:
                 f.write(config_content)
