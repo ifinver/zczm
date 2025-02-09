@@ -412,7 +412,7 @@ class NumberSites(APIView):
 
         return Response(
                 {"msg": f"写入openresty配置文件失败23423"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_200_OK
             )
 
         domain = request.data.get("domain")
