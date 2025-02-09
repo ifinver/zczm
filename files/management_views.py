@@ -418,10 +418,6 @@ class NumberSites(APIView):
                 {"msg": "域名写错了，只能包含一个小数点，不需要写前缀"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        return Response(
-            {"msg": "域名写错了，只能包含一个小数dfsdfs点，不需要写前缀"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
         # 构造 openresty 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
         config_content = f"""
 server {{
@@ -536,7 +532,7 @@ server {{
             if user_answer then
                 if not answer then
                     ngx.say("<html><head><meta charset='utf-8'><style>")
-                    ngx.say("body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }")
+                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }}")
                     ngx.say("</style></head><body>")
                     ngx.say("验证码已失效，请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>刷新页面</a>。")
                     ngx.say("</body></html>")
@@ -552,7 +548,7 @@ server {{
                     return
                 else
                     ngx.say("<html><head><meta charset='utf-8'><style>")
-                    ngx.say("body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }")
+                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }}")
                     ngx.say("</style></head><body>")
                     ngx.say("答案错误！请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>重新验证</a>。")
                     ngx.say("</body></html>")
@@ -560,7 +556,7 @@ server {{
                 end
             else
                 ngx.say("<html><head><meta charset='utf-8'><style>")
-                ngx.say("body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }")
+                ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }}")
                 ngx.say("</style></head>")
                 ngx.say("<body>")
                 ngx.say(string.format("<form method='get' action='/captcha'>"))
@@ -575,10 +571,6 @@ server {{
     }}
 }}
 """
-        return Response(
-            {"msg": "域名写错了，只能包含一个小数dfsdfs点，不需要写前缀"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
         config_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
