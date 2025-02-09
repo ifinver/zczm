@@ -418,7 +418,10 @@ class NumberSites(APIView):
                 {"msg": "域名写错了，只能包含一个小数点，不需要写前缀"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
+        return Response(
+            {"msg": "域名写错了，只能包含一个小数dfsdfs点，不需要写前缀"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
         # 构造 openresty 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
         config_content = f"""
 server {{
