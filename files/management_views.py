@@ -431,8 +431,8 @@ server {{
     }}
 
     gzip on;
-    access_log /var/log/openresty/mediacms.io.access.log;
-    error_log /var/log/openresty/mediacms.io.error.log warn;
+    access_log /var/log/nginx/mediacms.io.access.log;
+    error_log /var/log/nginx/mediacms.io.error.log warn;
 
     # 全局 Lua 拦截：仅对 Accept 包含 text/html 的请求生效，
     # 对 /captcha 页面本身不拦截，若未通过验证码验证则重定向到 /captcha
