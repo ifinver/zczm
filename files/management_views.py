@@ -470,7 +470,7 @@ server {{
         add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
 
-        include /usr/local/openresty/openresty/conf/sites-enabled/uwsgi_params;
+        include /usr/local/openresty/conf/sites-enabled/uwsgi_params;
         uwsgi_pass 127.0.0.1:9000;
     }}
 
