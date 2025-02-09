@@ -342,14 +342,14 @@ export class ManageCommentsPage extends Page {
         <br /><br />
         <h3>管理弹框</h3>
         <JsonEditor data={modifiedPopContent || {}} onChange={this.handlePopFieldChange} />
-        <button onClick={this.handleModifyPop} style={{ marginTop: '20px', padding: '10px 20px' }}>
+        <button onClick={this.handleModifyPop} style={{ padding: '10px 20px' }}>
           保存修改
         </button>
 
-        <br /><br />
+        <br /><br /><br />
         <h3>管理导航栏</h3>
         <JsonEditor data={modifiedNavContent || {}} onChange={this.handleNavFieldChange} />
-        <button onClick={this.handleModifyNav} style={{ marginTop: '20px', padding: '10px 20px' }}>
+        <button onClick={this.handleModifyNav} style={{ padding: '10px 20px' }}>
           保存修改
         </button>
         
