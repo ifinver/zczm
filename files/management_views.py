@@ -574,13 +574,17 @@ server {{
 """
         config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
+        return Response(
+                {"msg": "域名写错了，只能包含一个小数点ssss，不需要写前缀"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         try:
             with open(config_path, "w") as f:
                 f.write(config_content)
         except Exception as e:
             return Response(
                 {"msg": f"写入openresty配置文件失败: {str(e)}"},
-                status=status.HTTP_200_OK
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         # 调用 openresty -t 测试配置文件
@@ -601,7 +605,7 @@ server {{
         except Exception as e:
             return Response(
                 {"msg": f"执行openresty测试命令失败: {str(e)}"},
-                status=status.HTTP_200_OK
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         # 调用 openresty -s reload 重启 openresty
@@ -616,12 +620,12 @@ server {{
                 error_msg = result_reload.stderr.strip() or result_reload.stdout.strip()
                 return Response(
                     {"msg": f"openresty重启失败: {error_msg}"},
-                    status=status.HTTP_200_OK
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         except Exception as e:
             return Response(
                 {"msg": f"执行openresty重启命令失败: {str(e)}"},
-                status=status.HTTP_200_OK
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return Response({"msg": "绑定成功，已生效！"}, status=status.HTTP_200_OK)
