@@ -250,11 +250,12 @@ export class ManageCommentsPage extends Page {
   }
 
   componentDidMount() {
-    fetch('/static/nav.json')
+    // 每次请求 JSON 时，在 URL 后添加一个随机的 version 参数以绕过 CDN 缓存
+    fetch(`/static/nav.json?version=${Math.random()}`)
       .then((response) => response.json())
       .then((data) => this.setState({ modifiedNavContent: data }));
 
-    fetch('/static/pop.json')
+    fetch(`/static/pop.json?version=${Math.random()}`)
       .then((response) => response.json())
       .then((data) => this.setState({ modifiedPopContent: data }));
   }
