@@ -260,7 +260,7 @@ class PopDetail(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-openresty_NUMBER_SITES_DIR = "/usr/local/openresty/openresty/conf/sites-numbers/" 
+openresty_NUMBER_SITES_DIR = "/usr/local/openresty/nginx/conf/sites-numbers/" 
 class NumberSites(APIView):
     """查看和管理当前绑定的数字域名"""
 
