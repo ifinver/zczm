@@ -12,12 +12,12 @@ module.exports = {
   },
   logo: {
     lightMode: {
-      svg: './static/images/zczm_logo.svg',
-      img: './static/images/zczm_logo.png',
+      svg: './static/images/logo.png',
+      img: './static/images/logo.png',
     },
     darkMode: {
-      svg: './static/images/zczm_logo.svg',
-      img: './static/images/zczm_logo.png',
+      svg: './static/images/logo.png',
+      img: './static/images/logo.png',
     },
   },
   pages: {
