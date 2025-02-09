@@ -572,6 +572,10 @@ server {{
     }}
 }}
 """
+        return Response(
+                {"msg": f"写入openresty配置文件失败23423"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         config_path = os.path.join(openresty_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
