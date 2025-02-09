@@ -5,33 +5,134 @@ import { csrfToken, postRequest } from '../utils/helpers';
 import { Page } from './_Page';
 
 /**
- * 辅助函数：根据给定的路径更新 JSON 对象
- * 例如：path = ['a','b'] 表示更新 obj.a.b 为 value
+ * 辅助函数：根据给定的路径更新 JSON 对象（同时支持数组）
  */
 function updateJsonAtPath(obj, path, value) {
   if (path.length === 0) return value;
   const [key, ...rest] = path;
-  return {
-    ...obj,
-    [key]: rest.length === 0 ? value : updateJsonAtPath(obj[key] || {}, rest, value),
-  };
+  let newObj;
+  if (Array.isArray(obj)) {
+    newObj = [...obj];
+  } else if (typeof obj === 'object' && obj !== null) {
+    newObj = { ...obj };
+  } else {
+    newObj = {};
+  }
+  newObj[key] = rest.length === 0 ? value : updateJsonAtPath(newObj[key], rest, value);
+  return newObj;
 }
 
 /**
+ * ArrayEditor 组件
+ * 用于渲染数组（尤其是对象数组），支持对每个元素的编辑、删除以及新增元素
+ */
+function ArrayEditor({ data, onChange, path }) {
+  // 删除数组中指定 index 的元素
+  const handleDelete = (index) => {
+    const newArray = data.filter((_, i) => i !== index);
+    onChange(path, newArray);
+  };
+
+  // 新增一个空对象作为数组元素
+  const handleAddElement = () => {
+    const newArray = [...data, {}];
+    onChange(path, newArray);
+  };
+
+  // 当数组中某个对象内的字段变化时更新整个数组中对应的元素
+  const handleElementChange = (index, childPath, value) => {
+    onChange([...path, index, ...childPath], value);
+  };
+
+  return (
+    <div
+      style={{
+        marginLeft: '20px',
+        border: '1px dashed #aaa',
+        padding: '10px',
+        marginBottom: '10px',
+      }}
+    >
+      {data.map((item, index) => {
+        if (typeof item === 'object' && item !== null) {
+          return (
+            <div
+              key={index}
+              style={{
+                marginBottom: '10px',
+                border: '1px solid #ccc',
+                padding: '10px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <h4 style={{ margin: 0 }}>元素 {index + 1}</h4>
+                <button onClick={() => handleDelete(index)}>删除此元素</button>
+              </div>
+              <JsonEditor
+                data={item}
+                // 这里传入的 onChange 回调将自动组合路径：[index, ...childPath]
+                onChange={(childPath, value) => handleElementChange(index, childPath, value)}
+                path={[]} // 数组元素内部路径从空数组开始
+              />
+            </div>
+          );
+        }
+        // 如果数组元素为非对象类型
+        let inputType = 'text';
+        if (typeof item === 'number') inputType = 'number';
+        return (
+          <div key={index} style={{ marginBottom: '10px' }}>
+            <input
+              style={{ minWidth: '600px' }}
+              type={inputType}
+              value={item}
+              onChange={(e) => {
+                let newVal = e.target.value;
+                if (inputType === 'number') {
+                  newVal = e.target.value === '' ? '' : parseFloat(e.target.value);
+                }
+                onChange([...path, index], newVal);
+              }}
+            />
+            <button onClick={() => handleDelete(index)}>删除</button>
+          </div>
+        );
+      })}
+      <button onClick={handleAddElement}>新增元素</button>
+    </div>
+  );
+}
+
+ArrayEditor.propTypes = {
+  data: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
+  path: PropTypes.array.isRequired,
+};
+
+/**
  * JsonEditor 组件
- * 递归地根据传入的 data 对象生成表单控件，
- * onChange(path, newValue) 用来上报某个字段的变更
+ * 递归地根据传入的 JSON 数据生成表单控件
+ * 如果数据为数组，则调用 ArrayEditor
  */
 function JsonEditor({ data, onChange, path = [] }) {
+  // 如果 data 是数组，则直接使用 ArrayEditor 渲染
+  if (Array.isArray(data)) {
+    return <ArrayEditor data={data} onChange={onChange} path={path} />;
+  }
   if (typeof data !== 'object' || data === null) {
-    // 如果 data 不是对象，则什么也不渲染
     return null;
   }
   return (
     <div>
       {Object.entries(data).map(([key, val]) => {
         const currentPath = [...path, key];
-        // 如果值为对象且非数组，则递归生成子区域
+        // 若值为对象（且非数组），递归调用 JsonEditor
         if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
           return (
             <div
@@ -48,34 +149,57 @@ function JsonEditor({ data, onChange, path = [] }) {
             </div>
           );
         }
-        // 如果值为数组，采用 textarea 展示 JSON 字符串
+        // 若值为数组，则判断是否为对象数组
         if (Array.isArray(val)) {
+          const isObjectArray =
+            val.length === 0 || val.every((item) => typeof item === 'object' && item !== null);
+          if (isObjectArray) {
+            return (
+              <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', fontWeight: 'bold' }}>{key}:</label>
+                <ArrayEditor data={val} onChange={onChange} path={currentPath} />
+              </div>
+            );
+          } else {
+            // 对于非对象数组，以 textarea 编辑 JSON 字符串
+            return (
+              <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
+                <label style={{ display: 'block', fontWeight: 'bold' }}>{key}:</label>
+                <textarea
+                  style={{ minWidth: '600px', height: '60px' }}
+                  value={JSON.stringify(val)}
+                  onChange={(e) => {
+                    let newVal;
+                    try {
+                      newVal = JSON.parse(e.target.value);
+                    } catch (err) {
+                      newVal = e.target.value;
+                    }
+                    onChange(currentPath, newVal);
+                  }}
+                />
+              </div>
+            );
+          }
+        }
+        // 对于基本数据类型，判断是否为 content 字段
+        let inputType = 'text';
+        if (typeof val === 'number') inputType = 'number';
+        if (typeof val === 'boolean') inputType = 'checkbox';
+
+        if (key === 'content') {
           return (
             <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold' }}>{key}:</label>
+              <label style={{ marginRight: '10px', fontWeight: 'bold' }}>{key}:</label>
               <textarea
-                style={{ width: '100%', height: '60px' }}
-                value={JSON.stringify(val)}
-                onChange={(e) => {
-                  let newVal;
-                  try {
-                    newVal = JSON.parse(e.target.value);
-                  } catch (err) {
-                    newVal = e.target.value;
-                  }
-                  onChange(currentPath, newVal);
-                }}
+                style={{ minWidth: '600px', height: '150px' }}
+                value={val}
+                onChange={(e) => onChange(currentPath, e.target.value)}
               />
             </div>
           );
         }
-        // 针对简单类型，选择合适的 input 类型
-        let inputType = 'text';
-        if (typeof val === 'number') {
-          inputType = 'number';
-        } else if (typeof val === 'boolean') {
-          inputType = 'checkbox';
-        }
+
         return (
           <div key={currentPath.join('.')} style={{ marginBottom: '10px' }}>
             <label style={{ marginRight: '10px', fontWeight: 'bold' }}>{key}:</label>
@@ -87,12 +211,12 @@ function JsonEditor({ data, onChange, path = [] }) {
               />
             ) : (
               <input
+                style={{ minWidth: '600px' }}
                 type={inputType}
                 value={val}
                 onChange={(e) => {
                   let newVal = e.target.value;
                   if (inputType === 'number') {
-                    // 如果输入为空，则保持空字符串，否则转换为数字
                     newVal = e.target.value === '' ? '' : parseFloat(e.target.value);
                   }
                   onChange(currentPath, newVal);
@@ -107,7 +231,7 @@ function JsonEditor({ data, onChange, path = [] }) {
 }
 
 JsonEditor.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.any.isRequired,
   onChange: PropTypes.func.isRequired,
   path: PropTypes.array,
 };
@@ -193,14 +317,14 @@ export class ManageCommentsPage extends Page {
     );
   };
 
-  // 当导航栏的 JSON 对象中任意字段修改时调用
+  // 当导航栏 JSON 任意字段变化时调用
   handleNavFieldChange = (path, value) => {
     this.setState((prevState) => ({
       modifiedNavContent: updateJsonAtPath(prevState.modifiedNavContent, path, value),
     }));
   };
 
-  // 当弹框的 JSON 对象中任意字段修改时调用
+  // 当弹框 JSON 任意字段变化时调用
   handlePopFieldChange = (path, value) => {
     this.setState((prevState) => ({
       modifiedPopContent: updateJsonAtPath(prevState.modifiedPopContent, path, value),
@@ -213,12 +337,6 @@ export class ManageCommentsPage extends Page {
     return (
       <div>
         <h1>管理站点</h1>
-        <br /><br />
-        <h3>管理导航栏</h3>
-        <JsonEditor data={modifiedNavContent || {}} onChange={this.handleNavFieldChange} />
-        <button onClick={this.handleModifyNav} style={{ marginTop: '20px', padding: '10px 20px' }}>
-          保存修改
-        </button>
 
         <br /><br />
         <h3>管理弹框</h3>
@@ -226,6 +344,14 @@ export class ManageCommentsPage extends Page {
         <button onClick={this.handleModifyPop} style={{ marginTop: '20px', padding: '10px 20px' }}>
           保存修改
         </button>
+
+        <br /><br />
+        <h3>管理导航栏</h3>
+        <JsonEditor data={modifiedNavContent || {}} onChange={this.handleNavFieldChange} />
+        <button onClick={this.handleModifyNav} style={{ marginTop: '20px', padding: '10px 20px' }}>
+          保存修改
+        </button>
+        
       </div>
     );
   }
