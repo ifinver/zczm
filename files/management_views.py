@@ -531,8 +531,8 @@ class NumberSites(APIView):
 
                 if user_answer then
                     if not answer then
-                        ngx.say("<html><head><meta charset='utf-8'><style>")
-                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                        ngx.say("<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><style>")
+                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 24px; }}")
                         ngx.say("</style></head><body>")
                         ngx.say("验证码已失效，请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>刷新页面</a>。")
                         ngx.say("</body></html>")
@@ -546,22 +546,22 @@ class NumberSites(APIView):
                         }}
                         ngx.redirect(return_url); return
                     else
-                        ngx.say("<html><head><meta charset='utf-8'><style>")
-                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                        ngx.say("<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><style>")
+                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 24px; }}")
                         ngx.say("</style></head><body>")
                         ngx.say("答案错误！请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>重新验证</a>。")
                         ngx.say("</body></html>")
                         return
                     end
                 else
-                    ngx.say("<html><head><meta charset='utf-8'><style>")
-                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                    ngx.say("<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><style>")
+                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 24px; }}")
                     ngx.say("</style></head>")
                     ngx.say("<body>")
                     ngx.say(string.format("<form method='get' action='/captcha'>"))
-                    ngx.say(string.format("请回答：%d + %d = <input name='answer' autocomplete='off' style='font-size:20px;'/>", a, b))
+                    ngx.say(string.format("请回答：%d + %d = <input name='answer' autocomplete='off' style='font-size:24px; padding: 8px;'/>", a, b))
                     ngx.say(string.format("<input type='hidden' name='return_url' value='%s'/>", escape_html(return_url)))
-                    ngx.say("<input type='submit' value='提交' style='font-size:20px;'/>")
+                    ngx.say("<input type='submit' value='提交' style='font-size:24px; padding: 8px;'/>")
                     ngx.say("</form>")
                     ngx.say("</body></html>")
                     return
