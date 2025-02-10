@@ -420,156 +420,156 @@ class NumberSites(APIView):
             )
         # 构造 openresty 配置文件内容，注意 f-string 中双大括号用于输出字面量 "{" 和 "}"
         config_content = f"""
-server {{
-    listen 80;
-    listen [::]:80;
-    server_name {domain} *.{domain};
+    server {{
+        listen 80;
+        listen [::]:80;
+        server_name {domain} *.{domain};
 
-    # 强制 HTTPS（若请求头非 https，则重定向）
-    if ($http_x_forwarded_proto != "https") {{
-        return 301 https://$host$request_uri;
-    }}
+        # 强制 HTTPS（若请求头非 https，则重定向）
+        if ($http_x_forwarded_proto != "https") {{
+            return 301 https://$host$request_uri;
+        }}
 
-    gzip on;
-    access_log /var/log/nginx/mediacms.io.access.log;
-    error_log /var/log/nginx/mediacms.io.error.log warn;
+        gzip on;
+        access_log /var/log/nginx/mediacms.io.access.log;
+        error_log /var/log/nginx/mediacms.io.error.log warn;
 
-    # 全局 Lua 拦截：仅对 Accept 包含 text/html 的请求生效，
-    # 对 /captcha 页面本身不拦截，若未通过验证码验证则重定向到 /captcha
-    access_by_lua_block {{
-        local headers = ngx.req.get_headers()
-        local accept = headers["Accept"] or ""
-        if not accept:find("text/html", 1, true) then
-            return
-        end
-        if ngx.var.uri == "/captcha" then
-            return
-        end
-        local verified = ngx.var.cookie_captcha_verified
-        if verified ~= "1" then
-            local req_uri = ngx.var.request_uri or "/"
-            return ngx.redirect("/captcha?return_url=" .. ngx.escape_uri(req_uri))
-        end
-    }}
-
-    location /static {{
-        alias /home/mediacms.io/mediacms/static;
-    }}
-
-    location /media/original {{
-        alias /home/mediacms.io/mediacms/media_files/original;
-    }}
-
-    location /media {{
-        alias /home/mediacms.io/mediacms/media_files;
-    }}
-
-    location / {{
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
-
-        include /etc/openresty/sites-enabled/uwsgi_params;
-        uwsgi_pass 127.0.0.1:9000;
-    }}
-
-    # 验证码页面，仅用于生成和验证验证码
-    location = /captcha {{
-        content_by_lua_block {{
-            ngx.header["Content-Type"] = "text/html; charset=utf-8"
-
-            -- 定义一个简单的 HTML 转义函数
-            local function escape_html(s)
-                s = s or ""
-                s = s:gsub("&", "&amp;")
-                s = s:gsub("<", "&lt;")
-                s = s:gsub(">", "&gt;")
-                s = s:gsub('\"', "&quot;")
-                s = s:gsub("'", "&#39;")
-                return s
-            end
-
-            -- 获取查询参数
-            local args = ngx.req.get_uri_args()
-            local raw_return_url = args.return_url or "/"
-            local return_url
-            if raw_return_url == "%2F" then
-                return_url = "/"
-            else
-                return_url = ngx.unescape_uri(raw_return_url)
-            end
-
-            local user_answer = args.answer
-
-            -- 尝试从 Cookie 中获取之前保存的操作数（格式 "a,b"）
-            local captcha_numbers = ngx.var.cookie_captcha_numbers
-            local a, b, answer
-
-            if captcha_numbers then
-                local numbers = {{}}
-                local count = 0
-                for num in string.gmatch(captcha_numbers, "([^,]+)") do
-                    count = count + 1
-                    numbers[count] = tonumber(num)
-                end
-                if #numbers == 2 then
-                    a = numbers[1]
-                    b = numbers[2]
-                    answer = a + b
-                else
-                    captcha_numbers = nil  -- 格式错误则重新生成
-                end
-            end
-
-            if not captcha_numbers then
-                a = math.random(1, 10)
-                b = math.random(1, 10)
-                answer = a + b
-                ngx.header["Set-Cookie"] = "captcha_numbers=" .. a .. "," .. b .. "; Path=/; HttpOnly; Max-Age=86400"
-            end
-
-            if user_answer then
-                if not answer then
-                    ngx.say("<html><head><meta charset='utf-8'><style>")
-                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }}")
-                    ngx.say("</style></head><body>")
-                    ngx.say("验证码已失效，请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>刷新页面</a>。")
-                    ngx.say("</body></html>")
-                    return
-                end
-
-                if tonumber(user_answer) == answer then
-                    ngx.header["Set-Cookie"] = {{
-                        "captcha_verified=1; Path=/; HttpOnly; Max-Age=86400",
-                        "captcha_numbers=; Path=/; HttpOnly; Max-Age=0"
-                    }}
-                    ngx.redirect(return_url); return
-                else
-                    ngx.say("<html><head><meta charset='utf-8'><style>")
-                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }}")
-                    ngx.say("</style></head><body>")
-                    ngx.say("答案错误！请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>重新验证</a>。")
-                    ngx.say("</body></html>")
-                    return
-                end
-            else
-                ngx.say("<html><head><meta charset='utf-8'><style>")
-                ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; }}")
-                ngx.say("</style></head>")
-                ngx.say("<body>")
-                ngx.say(string.format("<form method='get' action='/captcha'>"))
-                ngx.say(string.format("请回答：%d + %d = <input name='answer' autocomplete='off'/>", a, b))
-                ngx.say(string.format("<input type='hidden' name='return_url' value='%s'/>", escape_html(return_url)))
-                ngx.say("<input type='submit' value='提交'/>")
-                ngx.say("</form>")
-                ngx.say("</body></html>")
+        # 全局 Lua 拦截：仅对 Accept 包含 text/html 的请求生效，
+        # 对 /captcha 页面本身不拦截，若未通过验证码验证则重定向到 /captcha
+        access_by_lua_block {{
+            local headers = ngx.req.get_headers()
+            local accept = headers["Accept"] or ""
+            if not accept:find("text/html", 1, true) then
                 return
             end
+            if ngx.var.uri == "/captcha" then
+                return
+            end
+            local verified = ngx.var.cookie_captcha_verified
+            if verified ~= "1" then
+                local req_uri = ngx.var.request_uri or "/"
+                return ngx.redirect("/captcha?return_url=" .. ngx.escape_uri(req_uri))
+            end
+        }}
+
+        location /static {{
+            alias /home/mediacms.io/mediacms/static;
+        }}
+
+        location /media/original {{
+            alias /home/mediacms.io/mediacms/media_files/original;
+        }}
+
+        location /media {{
+            alias /home/mediacms.io/mediacms/media_files;
+        }}
+
+        location / {{
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+
+            include /etc/openresty/sites-enabled/uwsgi_params;
+            uwsgi_pass 127.0.0.1:9000;
+        }}
+
+        # 验证码页面，仅用于生成和验证验证码
+        location = /captcha {{
+            content_by_lua_block {{
+                ngx.header["Content-Type"] = "text/html; charset=utf-8"
+
+                -- 定义一个简单的 HTML 转义函数
+                local function escape_html(s)
+                    s = s or ""
+                    s = s:gsub("&", "&amp;")
+                    s = s:gsub("<", "&lt;")
+                    s = s:gsub(">", "&gt;")
+                    s = s:gsub('\"', "&quot;")
+                    s = s:gsub("'", "&#39;")
+                    return s
+                end
+
+                -- 获取查询参数
+                local args = ngx.req.get_uri_args()
+                local raw_return_url = args.return_url or "/"
+                local return_url
+                if raw_return_url == "%2F" then
+                    return_url = "/"
+                else
+                    return_url = ngx.unescape_uri(raw_return_url)
+                end
+
+                local user_answer = args.answer
+
+                -- 尝试从 Cookie 中获取之前保存的操作数（格式 "a,b"）
+                local captcha_numbers = ngx.var.cookie_captcha_numbers
+                local a, b, answer
+
+                if captcha_numbers then
+                    local numbers = {{}}
+                    local count = 0
+                    for num in string.gmatch(captcha_numbers, "([^,]+)") do
+                        count = count + 1
+                        numbers[count] = tonumber(num)
+                    end
+                    if #numbers == 2 then
+                        a = numbers[1]
+                        b = numbers[2]
+                        answer = a + b
+                    else
+                        captcha_numbers = nil  -- 格式错误则重新生成
+                    end
+                end
+
+                if not captcha_numbers then
+                    a = math.random(1, 10)
+                    b = math.random(1, 10)
+                    answer = a + b
+                    ngx.header["Set-Cookie"] = "captcha_numbers=" .. a .. "," .. b .. "; Path=/; HttpOnly; Max-Age=86400"
+                end
+
+                if user_answer then
+                    if not answer then
+                        ngx.say("<html><head><meta charset='utf-8'><style>")
+                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                        ngx.say("</style></head><body>")
+                        ngx.say("验证码已失效，请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>刷新页面</a>。")
+                        ngx.say("</body></html>")
+                        return
+                    end
+
+                    if tonumber(user_answer) == answer then
+                        ngx.header["Set-Cookie"] = {{
+                            "captcha_verified=1; Path=/; HttpOnly; Max-Age=86400",
+                            "captcha_numbers=; Path=/; HttpOnly; Max-Age=0"
+                        }}
+                        ngx.redirect(return_url); return
+                    else
+                        ngx.say("<html><head><meta charset='utf-8'><style>")
+                        ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                        ngx.say("</style></head><body>")
+                        ngx.say("答案错误！请 <a href='/captcha?return_url=" .. ngx.escape_uri(return_url) .. "'>重新验证</a>。")
+                        ngx.say("</body></html>")
+                        return
+                    end
+                else
+                    ngx.say("<html><head><meta charset='utf-8'><style>")
+                    ngx.say("body {{ display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; font-size: 20px; }}")
+                    ngx.say("</style></head>")
+                    ngx.say("<body>")
+                    ngx.say(string.format("<form method='get' action='/captcha'>"))
+                    ngx.say(string.format("请回答：%d + %d = <input name='answer' autocomplete='off' style='font-size:20px;'/>", a, b))
+                    ngx.say(string.format("<input type='hidden' name='return_url' value='%s'/>", escape_html(return_url)))
+                    ngx.say("<input type='submit' value='提交' style='font-size:20px;'/>")
+                    ngx.say("</form>")
+                    ngx.say("</body></html>")
+                    return
+                end
+            }}
         }}
     }}
-}}
-"""
+    """
         config_path = os.path.join(OPENRESTY_NUMBER_SITES_DIR, domain)
         config_path = os.path.normpath(config_path)
         try:
