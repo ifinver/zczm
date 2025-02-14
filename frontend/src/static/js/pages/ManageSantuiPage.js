@@ -6,6 +6,8 @@ import axios from 'axios';
 export const ManageSantuiPage = ({ title }) => {
   const [applications, setApplications] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+  // 用于存储每个申请对应的输入框值，key 为 app.id
+  const [tickets, setTickets] = useState({});
 
   useEffect(() => {
     fetchApplications();
@@ -26,8 +28,9 @@ export const ManageSantuiPage = ({ title }) => {
     });
   };
 
-  const markAsCompleted = (id) => {
-    axios.post('/api/v1/santui', { id }, {
+  // 修改 markAsCompleted 函数，增加 ticket 参数
+  const markAsCompleted = (id, ticket) => {
+    axios.post('/api/v1/santui', { id, ticket }, {
       headers: {
         'X-CSRFToken': csrfToken(),
       },
@@ -36,7 +39,7 @@ export const ManageSantuiPage = ({ title }) => {
     .then(() => {
       setApplications(prevApplications =>
         prevApplications.map(app =>
-          app.id === id ? { ...app, is_completed: true } : app
+          app.id === id ? { ...app, is_completed: true, ticket } : app
         )
       );
     })
@@ -84,20 +87,36 @@ export const ManageSantuiPage = ({ title }) => {
                   <div style={{ color: '#374151', marginBottom: '12px' }}>{noteContent}</div>
                 </>
               )}
-              <div style={{ position: 'absolute', bottom: '16px', left: '16px' }}>
+              <div style={{ position: 'absolute', bottom: '16px', left: '16px', display: 'flex', alignItems: 'center' }}>
                 {app.is_completed ? (
-                  <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>✔ 已完成</span>
+                  <span style={{ color: '#16a34a', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    ✔ 已完成， {app.ticket && `三退号码：${app.ticket}`}
+                  </span>
                 ) : (
-                  <button 
-                    style={{
-                      backgroundColor: '#2563eb', color: 'white', padding: '8px 16px',
-                      borderRadius: '6px', fontWeight: 'bold', transition: 'background 0.3s',
-                      border: 'none', cursor: 'pointer'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-                    onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
-                    onClick={() => markAsCompleted(app.id)}
-                  >完成</button>
+                  <>
+                    <input
+                      type="text"
+                      placeholder="请输入三退号码"
+                      value={tickets[app.id] || ''}
+                      onChange={e => setTickets({ ...tickets, [app.id]: e.target.value })}
+                      style={{
+                        marginRight: '8px',
+                        padding: '8px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc'
+                      }}
+                    />
+                    <button 
+                      style={{
+                        backgroundColor: '#2563eb', color: 'white', padding: '8px 16px',
+                        borderRadius: '6px', fontWeight: 'bold', transition: 'background 0.3s',
+                        border: 'none', cursor: 'pointer'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2563eb'}
+                      onClick={() => markAsCompleted(app.id, tickets[app.id])}
+                    >完成</button>
+                  </>
                 )}
               </div>
             </div>

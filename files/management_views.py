@@ -654,6 +654,7 @@ class Santui(APIView):
                     "is_completed": app.is_completed,
                     "completed_at": app.completed_at,
                     "created_at": app.created_at,
+                    "ticket": app.ticket,
                 }
                 for app in santui_list
             ]
@@ -678,9 +679,13 @@ class Santui(APIView):
         """处理标记为已完成的逻辑"""
 
         application_id = request.data.get("id")
+        ticket = request.data.get("ticket")
 
         if not application_id:
             return Response({"msg": "ID 不能为空"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not ticket:
+            return Response({"msg": "三退号码不能为空"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             # 获取对应的记录
@@ -690,6 +695,7 @@ class Santui(APIView):
 
             # 更新完成状态和完成时间
             application.is_completed = True
+            application.ticket = ticket
             application.completed_at = now()
             application.save()
 

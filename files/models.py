@@ -125,6 +125,7 @@ class SantuiApplication(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True, verbose_name="完成时间")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="更新时间")
+    ticket = models.TextField(verbose_name="三退号码", blank=True, null=True)
 
     class Meta:
         verbose_name = "三退申请"
