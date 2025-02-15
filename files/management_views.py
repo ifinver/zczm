@@ -645,19 +645,10 @@ class Santui(APIView):
         """处理 GET 请求，返回排序后的所有数据"""
         try:
             # 注：通过条件表达式分别为未完成和已完成的记录添加排序字段
-            santui_list = SantuiApplication.objects.annotate(
-                not_completed_sort=Case(
-                    When(is_completed=False, then=F('created_at')),
-                    default=Value(None)
-                ),
-                completed_sort=Case(
-                    When(is_completed=True, then=F('completed_at')),
-                    default=Value(None)
-                )
-            ).order_by(
-                'is_completed',          # 未完成的（False）排在前面，已完成的（True）排在后面
-                'not_completed_sort',    # 对于未完成的，按照创建时间升序（申请时间早的在上面）
-                '-completed_sort'        # 对于已完成的，按照完成时间降序（操作时间最新的在最上面）
+            santui_list = SantuiApplication.objects.all().order_by(
+                'is_completed',         
+                'completed_at',    # 对于未完成的，按照创建时间升序（申请时间早的在上面）
+                'created_at'        # 对于已完成的，按照完成时间降序（操作时间最新的在最上面）
             )
             
             # 格式化数据
