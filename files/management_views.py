@@ -634,16 +634,32 @@ class Santui(APIView):
         manual_parameters=[],
         tags=['Manage'],
         operation_summary='Get all Santui applications',
-        operation_description='获取所有三退申请，未完成的排在上面，已完成的排在下面；第二排序条件是按申请时间先后排序',
+        operation_description=(
+            '获取所有三退申请：'
+            '未完成的三退根据申请时间（created_at）升序排列（较早申请的在上面，最新申请的在最下面）；'
+            '已完成的三退根据完成时间（completed_at）降序排列（操作时间最新的在最上面）；'
+            '整体上，未完成的记录排在已完成的记录之前。'
+        ),
     )
     def get(self, request, format=None):
         """处理 GET 请求，返回排序后的所有数据"""
         try:
-            # 查询并排序数据
-            santui_list = SantuiApplication.objects.all().order_by(
-                'is_completed',  # 未完成排在上面
-                'created_at'     # 申请时间早的排在上面
+            # 注：通过条件表达式分别为未完成和已完成的记录添加排序字段
+            santui_list = SantuiApplication.objects.annotate(
+                not_completed_sort=Case(
+                    When(is_completed=False, then=F('created_at')),
+                    default=Value(None)
+                ),
+                completed_sort=Case(
+                    When(is_completed=True, then=F('completed_at')),
+                    default=Value(None)
+                )
+            ).order_by(
+                'is_completed',          # 未完成的（False）排在前面，已完成的（True）排在后面
+                'not_completed_sort',    # 对于未完成的，按照创建时间升序（申请时间早的在上面）
+                '-completed_sort'        # 对于已完成的，按照完成时间降序（操作时间最新的在最上面）
             )
+            
             # 格式化数据
             data = [
                 {
