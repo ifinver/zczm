@@ -159,10 +159,12 @@
         if (shouldShowPopup()) {
         fetchPopupData()
             .then(data => {
-            // data 例如: { "title": "标题", "content": "HTML内容..." }
-            showPopup(data.title, data.content,data.button_text, data.button_link);
-            // 记录本次弹窗时间
-            localStorage.setItem('customPopupLastShown', new Date());
+                // data 例如: { "title": "标题", "content": "HTML内容..." }
+                if(data.enabled){
+                    showPopup(data.title, data.content,data.button_text, data.button_link);
+                    // 记录本次弹窗时间
+                    localStorage.setItem('customPopupLastShown', new Date());
+                }
             })
             .catch(err => {
             console.error('Popup fetch error:', err);
