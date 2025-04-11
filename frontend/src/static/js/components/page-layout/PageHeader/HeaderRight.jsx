@@ -175,7 +175,7 @@ export function HeaderRight(props) {
                       hasHeaderThemeSwitcher={header.hasThemeSwitcher}
                     /> */}
 
-                    <div>
+                    <div style="padding-right: 15px;">
                       <a href='/static/app-download.html'>APP下载</a>
                     </div>
                     &nbsp;&nbsp;
