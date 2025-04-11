@@ -178,6 +178,7 @@ export function HeaderRight(props) {
                     <div>
                       <a href='/static/app-download.html'>APP下载</a>
                     </div>
+                    &nbsp;&nbsp;
                     <div>
                       <a href='/static/santui.html'>我要三退</a>
                     </div>
