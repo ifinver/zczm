@@ -17,7 +17,22 @@
     header {
       background-color: #4A90E2;
       color: white;
-      padding: 2rem 1rem;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+    }
+
+    .logo img {
+      width: 117.58px;
+      height: 30.7px;
     }
 
     header h1 {
@@ -80,11 +95,23 @@
         width: 80%;
         margin: 0 auto;
       }
+
+      .logo {
+        position: static;
+        margin-bottom: 1rem;
+      }
+
+      header {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <header>
+    <a href="/" class="logo">
+      <img src="/static/images/logo.png" alt="众创之门 Logo">
+    </a>
     <h1>众创之门APP下载</h1>
   </header>
 
