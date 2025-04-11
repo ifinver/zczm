@@ -17,17 +17,11 @@
     header {
       background-color: #4A90E2;
       color: white;
-      padding: 1rem;
+      padding: 1rem 1rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .logo {
-      position: absolute;
-      left: 1rem;
-      top: 1rem;
+      justify-content: space-between;
+      position: relative;
     }
 
     .logo img {
@@ -35,9 +29,18 @@
       height: 30.7px;
     }
 
-    header h1 {
-      margin: 0;
+    .title {
       font-size: 2rem;
+      margin: 0 auto;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .santui-link {
+      font-size: 1rem;
+      text-decoration: none;
+      color: #cc3366;
+      white-space: nowrap;
     }
 
     .download-buttons {
@@ -86,23 +89,23 @@
       border-radius: 8px;
     }
 
-    @media (max-width: 600px) {
-      .download-buttons {
+    @media (max-width: 768px) {
+      header {
         flex-direction: column;
+        gap: 0.5rem;
       }
 
-      .download-buttons a {
-        width: 80%;
-        margin: 0 auto;
+      .title {
+        order: 2;
+        margin: 0;
       }
 
       .logo {
-        position: static;
-        margin-bottom: 1rem;
+        order: 1;
       }
 
-      header {
-        flex-direction: column;
+      .santui-link {
+        order: 3;
       }
     }
   </style>
@@ -112,7 +115,8 @@
     <a href="/" class="logo">
       <img src="/static/images/logo.png" alt="众创之门 Logo">
     </a>
-    <h1>众创之门APP下载</h1>
+    <h1 class="title">众创之门APP下载</h1>
+    <a href="/static/santui.html" class="santui-link">我要三退</a>
   </header>
 
   <div class="download-buttons">
