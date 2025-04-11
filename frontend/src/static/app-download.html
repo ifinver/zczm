@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>众创之门APP下载</title>
+  <link rel="icon" href="/static/favicons/favicon.ico" type="image/x-icon">
   <style>
     body {
       font-family: "Arial", sans-serif;
@@ -17,12 +18,30 @@
     header {
       background-color: #4A90E2;
       color: white;
-      padding: 2rem 1rem;
+      padding: 1rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
     }
 
-    header h1 {
-      margin: 0;
+    .logo img {
+      width: 117.58px;
+      height: 30.7px;
+    }
+
+    .title {
       font-size: 2rem;
+      margin: 0 auto;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .santui-link {
+      font-size: 1rem;
+      text-decoration: none;
+      color: #cc3366;
+      white-space: nowrap;
     }
 
     .download-buttons {
@@ -71,21 +90,34 @@
       border-radius: 8px;
     }
 
-    @media (max-width: 600px) {
-      .download-buttons {
+    @media (max-width: 768px) {
+      header {
         flex-direction: column;
+        gap: 0.5rem;
       }
 
-      .download-buttons a {
-        width: 80%;
-        margin: 0 auto;
+      .title {
+        order: 2;
+        margin: 0;
+      }
+
+      .logo {
+        order: 1;
+      }
+
+      .santui-link {
+        order: 3;
       }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>众创之门APP下载</h1>
+    <a href="/" class="logo">
+      <img src="/static/images/logo.png" alt="众创之门 Logo">
+    </a>
+    <h1 class="title">众创之门APP下载</h1>
+    <a href="/static/santui.html" class="santui-link">我要三退</a>
   </header>
 
   <div class="download-buttons">
