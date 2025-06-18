@@ -124,7 +124,7 @@
             border-radius: 5px;
         }
 
-        
+
         /* 响应式布局：小于800px时垂直排列 */
         @media (max-width: 699px) {
             .input-area {
@@ -611,6 +611,46 @@
             </p>
         </div>
 
+        <!-- Expandable Text 3 -->
+        <div class="expandable-text" onclick="toggleContent('expandableContent3', 'arrow3')" id="text2">
+            <span class="arrow" id="arrow3">&#9654;</span>
+            中共邪教组织的特征..(点击展开)
+        </div>
+
+        <div class="content" id="expandableContent3" style="max-height: 0;">
+            <ol style="padding-left: 1.2em;">
+                <li style="margin-bottom: 1em;">
+                    <strong>思想控制：</strong>通过党课、学习强国、意识形态宣传等方式，要求党员和群众“思想统一”，塑造对党“绝对忠诚”的信仰，形成“统一思想”的精神桎梏。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>信息控制：</strong>全面封锁外部信息，严密审查互联网与出版物，禁止自由媒体，打压异议声音，使大众只能接触党批准的“唯一真相”。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>妖魔化外界：</strong>将外部世界尤其是西方国家描绘成“敌对势力”“亡我之心不死”，制造民族主义与危机感，以巩固内部团结与依附。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>神话教主和组织：</strong>刻意神化毛泽东、习近平等领导人，称其“英明伟大”，宣传其“语录”为“真理”，并强化“党就是一切”的组织至上观。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>活动区域控制：</strong>将政权触角深入到学校、社区、企业、宗教场所、海外留学生等每一角落，做到“党无处不在”，使群众失去私域空间。</li>
+                <li style="margin-bottom: 1em;"><strong>教派控制：</strong>限制宗教自由，扶持“党领导下的宗教”，打压未受控的宗教组织（如家庭教会、法轮功），以党代“信仰”。
+                </li>
+                <li style="margin-bottom: 1em;">
+                    <strong>生存资源控制：</strong>垄断土地、资源、户籍、就业、教育等基本生存要素，使人民对政权产生高度依赖，不服从即“失去生存权”。</li>
+                <li style="margin-bottom: 1em;"><strong>强行入教：</strong>从小学到大学实行“强制入党入团入队”制度，入党不仅是政治选择，也是获取社会资源、升迁通道的必由之路。
+                </li>
+                <li style="margin-bottom: 1em;">
+                    <strong>暴力机构私有化：</strong>将公安、武警、特警等国家暴力机关用于镇压异见、维稳、打击“敌对势力”，服务于党的统治，而非公民的正义。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>虚构灾难，美化未来：</strong>制造“没有共产党，中国就会动荡、亡国”的恐慌，同时描绘“民族伟大复兴”“中国梦”的乌托邦景象。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>残害生灵的事实：</strong>包括文革、六四、计划生育、打压维族、迫害法轮功、镇压异议群体、活摘器官等大规模侵犯人权的行为，造成无数生命和家庭破碎。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>邪教核心成员富可敌国：</strong>中共高层家族往往控制巨额财富，通过权贵资本主义积累资产，同时对外宣称“为人民服务”，营造虚假清廉形象。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>内部等级森严：</strong>“上级永远正确”“绝对服从”，组织结构近似金字塔式邪教体制，党员和群众层层接受指令，个人无法自由思考与决策。</li>
+                <li style="margin-bottom: 1em;"><strong>灭绝个体意志：</strong>强调集体主义压倒个人价值，“组织决定一切”，个人被要求“牺牲小我，成全大我”。</li>
+                <li style="margin-bottom: 1em;">
+                    <strong>抵制批评，排斥异己：</strong>对所有批评意见视为“抹黑中国”“反华势力”，将政党和国家捆绑一起通过扣帽子与舆论围剿，清除内部异见，压制社会多元表达。</li>
+            </ol>
+        </div>
+
         <!-- Input Area -->
         <div class="input-area">
             <!-- Left Text -->
@@ -631,7 +671,8 @@
                 <input type="text" id="name" name="name" required placeholder="例：德福、川普、叶凡">
 
                 <label for="application">申请内容</label>
-                <textarea type="text" id="application" rows="3" name="application" required placeholder="例：德福退少先队。川普退共青团和共产党。叶凡三种组织都退。加入过什么退什么即可。"></textarea>
+                <textarea type="text" id="application" rows="3" name="application" required
+                    placeholder="例：德福退少先队。川普退共青团和共产党。叶凡三种组织都退。加入过什么退什么即可。"></textarea>
 
                 <label for="remarks">留言备注（选填）</label>
                 <input id="remarks" name="remarks" placeholder="任何想说的话，内容不限（选填）">
