@@ -239,6 +239,13 @@ def featured_media(request):
     return render(request, "cms/featured-media.html", context)
 
 
+def santui(request):
+    """Santui view - 三退保平安页面"""
+
+    context = {}
+    return render(request, "cms/santui.html", context)
+
+
 def index(request):
     """Index view"""
 

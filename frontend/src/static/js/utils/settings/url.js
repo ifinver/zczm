@@ -8,6 +8,10 @@ export function init(pages_url) {
   }
 }
 
-export function pages() {
-  return PAGES;
+export function get(page) {
+  return PAGES[page];
+}
+
+export function videos() {
+  return PAGES.videos;
 }
