@@ -162,7 +162,7 @@
 
             .page-header-right a {
                 font-size: 0.9em;
-                padding: 0 10px;
+                padding: 0;
             }
         }
 
@@ -242,8 +242,7 @@
         .logo picture {
             position: relative;
             float: left;
-            max-width: 117.58px;
-            max-height: 38.99px;
+            max-height: 42px;
         }
 
         img {
@@ -266,7 +265,26 @@
             padding-right: 45px;
             border-bottom: 1px solid #e9e4e4;
             min-height: 20px;
+            padding-bottom: 10px;
         }
+
+        .nav-title {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .nav-hint {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 0;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -281,6 +299,7 @@
             z-index: 10;
             pointer-events: none;
             opacity: 0.5;
+            cursor: pointer;
         }
 
         .nav-arrow.left-arrow {
@@ -312,8 +331,8 @@
             cursor: pointer;
         }
         .nav-item img {
-            width: 39px;
-            height: 39px;
+            width: 44px;
+            height: 44px;
             border-radius: 8px;
             transition: transform 0.3s ease;
             margin: 0 auto;
@@ -386,6 +405,7 @@
 
         <div class="media-list-wrapper">
             <div id="navbar-container" class='media-list-row'>
+                <h4 class="nav-title">点击查看更多精彩内容</h4>
                 <div class="nav-arrow left-arrow">
                     <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
                 </div>
@@ -396,6 +416,7 @@
                 <div class="nav-arrow right-arrow">
                     <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"></path></svg>
                 </div>
+                <p class="nav-hint">如果无法播放干净世界的视频，请尝试下载欧朋浏览器或Alook浏览器</p>
             </div>
         </div>
 
