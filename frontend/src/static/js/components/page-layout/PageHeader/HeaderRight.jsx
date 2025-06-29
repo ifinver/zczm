@@ -179,7 +179,7 @@ export function HeaderRight(props) {
                       <a href='/static/app-download.html'>APP下载</a>
                     </div>
                     <div>
-                      <a href='/static/santui.html'>我要三退</a>
+                      <a href='/'>我要三退</a>
                     </div>
 
                     {PageStore.get('config-contents').header.right ? (
