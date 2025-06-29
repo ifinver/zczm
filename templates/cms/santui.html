@@ -15,19 +15,23 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: #f9f9f9; /* 添加背景色以获得更好视觉效果 */
         }
 
         .container {
             max-width: 1140px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 80px 10px 10px; /* 为固定的 header 留出空间 */
             box-sizing: border-box;
+            background-color: white; /* 为容器添加背景色 */
+            width: 100%;
         }
 
         h1 {
             color: #6EC1E4;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20px; /* 调整边距 */
+            font-size: 2em;
         }
 
         video {
@@ -126,10 +130,39 @@
         }
 
 
-        /* 响应式布局：小于800px时垂直排列 */
-        @media (max-width: 699px) {
+        /* 响应式布局：小于768px时垂直排列 */
+        @media (max-width: 768px) {
             .input-area {
                 flex-direction: column;
+                padding: 10px;
+            }
+
+            .form {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-top: 15px;
+            }
+
+            .special-button {
+                width: 90%;
+                font-size: 1rem;
+                padding: 10px 0;
+            }
+
+            .page-header-left {
+                padding-left: 15px;
+            }
+
+            .page-header-right {
+                right: 5px;
+            }
+
+            .page-header-right a {
+                font-size: 0.9em;
+                padding: 0 10px;
             }
         }
 
@@ -152,6 +185,7 @@
 
         #footer-text {
             color: #7A7A7A;
+            padding: 0 10px; /* 为移动端添加内边距 */
         }
 
         .page-header {
@@ -160,7 +194,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: var(--header-height);
+            height: 60px; /* 明确定义 header 高度 */
             display: table;
             width: 100%;
             border-bottom: 1px solid #eeebeb;
@@ -173,6 +207,22 @@
             left: 20px;
             padding-right: 104px;
             padding-left: 40px;
+        }
+
+        .page-header-right {
+            position: absolute;
+            right: 40px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-header-right a {
+            color: #6EC1E4;
+            font-size: 1.1em;
+            text-decoration: none;
+            padding: 0 18px;
         }
 
         .logo {
@@ -297,8 +347,8 @@
                                 loading="lazy"></span></a>
                 </div>
             </div>
-            <div style="position:absolute;right:40px;top:0;height:100%;display:flex;align-items:center;">
-                <a href="/videos" style="color:#6EC1E4;font-size:1.1em;text-decoration:none;padding:0 18px;">访问首页</a>
+            <div class="page-header-right">
+                <a href="/videos">访问首页</a>
             </div>
         </header>
 
@@ -888,7 +938,12 @@
                             },
                             slidesPerView: 'auto',
                             slidesPerGroup: 1,
-                            spaceBetween: 69,
+                            spaceBetween: 20,
+                            breakpoints: {
+                                768: {
+                                    spaceBetween: 69,
+                                }
+                            }
                         });
                     }
                 })
