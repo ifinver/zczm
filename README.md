@@ -1,5 +1,13 @@
 # MediaCMS
 
+## 代码更新后执行：
+cd /home/mediacms.io/mediacms # enter mediacms directory
+source  /home/mediacms.io/bin/activate # use virtualenv
+git pull # update code
+pip install -r requirements.txt -U # run pip install to update
+python manage.py migrate # run Django migrations
+sudo systemctl restart mediacms celery_long celery_short # restart services
+
 [![GitHub license](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://raw.githubusercontent.com/mediacms-io/mediacms/main/LICENSE.txt)
 [![Releases](https://img.shields.io/github/v/release/mediacms-io/mediacms?color=green)](https://github.com/mediacms-io/mediacms/releases/)
 [![DockerHub](https://img.shields.io/docker/pulls/mediacms/mediacms)](https://hub.docker.com/r/mediacms/mediacms)
