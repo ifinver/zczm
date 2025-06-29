@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>三退保平安</title>
     <link rel="icon" href="/static/favicons/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/lib/swiper/swiper-bundle.min.css" />
     <style>
         body {
             margin: 0;
@@ -200,6 +201,68 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+
+        /* 导航栏样式 */
+        .media-list-wrapper {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        #navbar-container {
+            position: relative;
+            background-color: #f8f9fa;
+            overflow: hidden;
+            padding-top: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-bottom: 1px solid #e9e4e4;
+            min-height: 20px;
+        }
+        .swiper {
+            width: 100%;
+            overflow: hidden;
+        }
+        .swiper-slide {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto !important;
+        }
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+        }
+        .nav-item img {
+            width: 39px;
+            height: 39px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        .nav-item img:hover {
+            transform: scale(1.1);
+        }
+        .nav-item a,
+        a:visited,
+        a:hover,
+        a:active,
+        a:focus {
+            text-decoration: none;
+            /* 去掉下划线 */
+            outline: none;
+            /* 移除聚焦时的默认轮廓 */
+            border: none;
+            /* 去掉边框 */
+        }
+        .nav-item a p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            outline: none;
+            /* 去掉聚焦状态的边框 */
+            border: none;
+            /* 去掉边框 */
+        }
     </style>
 </head>
 
@@ -219,14 +282,14 @@
 
         <h1>三退保平安</h1>
 
-        <!-- Video Player -->
-        <video controls
-            poster="/media/original/thumbnails/user/admin/9111175c5f774177b5aa6d0df011b809.中共不是中国.mp4_zlJGPRg.jpg">
-            <source
-                src="/media/encoded/3/admin/9111175c5f774177b5aa6d0df011b809.9111175c5f774177b5aa6d0df011b809.中共不是中国.mp4.mp4"
-                type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <div class="media-list-wrapper">
+            <div id="navbar-container" class='media-list-row'>
+                <div class="swiper" id="nav-swiper">
+                    <div class="swiper-wrapper">
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Expandable Text 1 -->
         <div class="expandable-text" onclick="toggleContent('expandableContent1', 'arrow1')" id="text1">
@@ -698,6 +761,7 @@
         </div>
     </div>
 
+    <script src="/static/lib/swiper/swiper-bundle.min.js"></script>
     <script>
         function toggleContent(contentId, arrowId) {
             const content = document.getElementById(contentId);
@@ -771,6 +835,41 @@
         function submitForm() {
             performSubmitForm()
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/static/nav.json')
+                .then(response => response.json())
+                .then(data => {
+                    const swiperWrapper = document.querySelector('#nav-swiper .swiper-wrapper');
+                    if(swiperWrapper){
+                        data.forEach(item => {
+                            const slide = document.createElement('div');
+                            slide.classList.add('swiper-slide');
+                            slide.innerHTML = `
+                                <div class="nav-item">
+                                    <a href="${item.url}" target="_blank" rel="noopener noreferrer">
+                                        <img src="${item.icon}" alt="${item.title}" />
+                                        <p>${item.title}</p>
+                                    </a>
+                                </div>
+                            `;
+                            swiperWrapper.appendChild(slide);
+                        });
+
+                        new Swiper('#nav-swiper', {
+                            loop: true,
+                            autoplay: {
+                                delay: 3000,
+                                disableOnInteraction: false,
+                            },
+                            slidesPerView: 'auto',
+                            slidesPerGroup: 1,
+                            spaceBetween: 69,
+                        });
+                    }
+                })
+                .catch(err => console.error("Error fetching or processing nav.json", err));
+        });
     </script>
 </body>
 
