@@ -167,7 +167,7 @@
         }
 
         .form button {
-            background-color: #6ec1e4;
+            background-color: purple;
             color: white;
             cursor: pointer;
             border: none;
@@ -219,7 +219,7 @@
         }
         
         .page-header-right a {
-            color: #6EC1E4;
+            color: purple;
             font-size: 1.1em;
             text-decoration: none;
             padding: 0 18px;
@@ -267,6 +267,35 @@
             border-bottom: 1px solid #e9e4e4;
             min-height: 20px;
         }
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .nav-arrow.left-arrow {
+            left: 10px;
+        }
+
+        .nav-arrow.right-arrow {
+            right: 10px;
+        }
+
+        .nav-arrow svg {
+            fill: white;
+            width: 24px;
+            height: 24px;
+        }
         .swiper {
             width: 100%;
             overflow: hidden;
@@ -287,6 +316,7 @@
             height: 39px;
             border-radius: 8px;
             transition: transform 0.3s ease;
+            margin: 0 auto;
         }
         .nav-item img:hover {
             transform: scale(1.1);
@@ -317,7 +347,7 @@
         .special-button {
             display: block;
             width: 60%;
-            margin: 28px auto 10px;
+            margin: 28px auto 0;
             padding: 11px 0;
             background-color: orange;
             border: 3px solid #ff9800;
@@ -348,7 +378,7 @@
                 </div>
             </div>
             <div class="page-header-right">
-                <a href="/videos">访问首页</a>
+                <a href="/videos">访问众创首页</a>
             </div>
         </header>
 
@@ -356,9 +386,15 @@
 
         <div class="media-list-wrapper">
             <div id="navbar-container" class='media-list-row'>
+                <div class="nav-arrow left-arrow">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+                </div>
                 <div class="swiper" id="nav-swiper">
                     <div class="swiper-wrapper">
                     </div>
+                </div>
+                <div class="nav-arrow right-arrow">
+                    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"></path></svg>
                 </div>
             </div>
         </div>
@@ -817,7 +853,7 @@
                 <label for="remarks">留言备注（选填）</label>
                 <input id="remarks" name="remarks" placeholder="任何想说的话，内容不限（选填）">
 
-                <button type="button" onclick="submitForm()">提交申请</button>
+                <button type="button" onclick="submitForm()">提交三退申请</button>
                 <div id="error-message" class="error"></div>
             </form>
         </div>
@@ -938,12 +974,7 @@
                             },
                             slidesPerView: 'auto',
                             slidesPerGroup: 1,
-                            spaceBetween: 20,
-                            breakpoints: {
-                                768: {
-                                    spaceBetween: 69,
-                                }
-                            }
+                            spaceBetween: 40,
                         });
                     }
                 })
