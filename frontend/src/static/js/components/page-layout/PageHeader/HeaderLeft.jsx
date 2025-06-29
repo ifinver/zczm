@@ -29,7 +29,7 @@ export function HeaderLeft() {
                     </CircleIconButton>
                   </div>
                 ) : null}
-                <Logo src={logo} href={links.home} title={site.title} />
+                <Logo src={logo} href="/videos" title={site.title} />
                 {PageStore.get('config-contents').header.onLogoRight ? (
                   <div
                     className="on-logo-right"
