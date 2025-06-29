@@ -6,6 +6,10 @@ source  /home/mediacms.io/bin/activate # use virtualenv
 git pull # update code
 pip install -r requirements.txt -U # run pip install to update
 python manage.py migrate # run Django migrations
+cd /frontend
+export NODE_OPTIONS="--openssl-legacy-provider"
+npm run dist
+cd ..
 sudo systemctl restart mediacms celery_long celery_short # restart services
 
 [![GitHub license](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://raw.githubusercontent.com/mediacms-io/mediacms/main/LICENSE.txt)
