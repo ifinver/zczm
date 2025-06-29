@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block headermeta %}
+
+<link rel="canonical" href="{{FRONTEND_HOST}}/videos">
+
+<meta name="description" content="视频列表 - {{PORTAL_DESCRIPTION}}">
+
+<meta property="og:title" content="视频列表 - {{PORTAL_NAME}}">
+<meta property="og:url" content="{{FRONTEND_HOST}}/videos">
+<meta property="og:type" content="website">
+<meta property="og:description" content="视频列表">
+
+<meta name="twitter:card" content="summary">
+
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	"url": "{{FRONTEND_HOST}}/videos",
+	"potentialAction": {
+		"@type": "SearchAction",
+		"target": "{{FRONTEND_HOST}}/search?q={search_query_string}",
+		"query-input": "required name=search_query_string"
+	}
+}
+</script>
+
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": [{
+		"@type": "ListItem",
+		"position": 1,
+        "name": "{{PORTAL_NAME}}",
+        "item": {
+        	"@type": "WebPage",
+        	"@id": "{{FRONTEND_HOST}}"
+    	}
+    }, {
+		"@type": "ListItem",
+		"position": 2,
+        "name": "视频列表",
+        "item": {
+        	"@type": "WebPage",
+        	"@id": "{{FRONTEND_HOST}}/videos"
+    	}
+    }]
+}
+</script>
+
+{% endblock headermeta %}
+
+{% block content %}<div id="page-home"></div>{% endblock %}
+
+{% block bottomimports %}
+<script src="{% static "js/index.js" %}"></script>
+{% endblock bottomimports %}
