@@ -879,7 +879,7 @@
                     <span>三退即：退出少先队、共青团、共产党。三退可选择使用真名或任何化名（不记名）皆可。</span>
                     <span>三退发表须知：</span>
                     <span>本站使用加密传输，不会给您带来安全影响；</span>
-                    <span>若选择使用化名（三退）请尽量使用正常的中文化名；</span>
+                    <span>若使用化名进行三退，请只使用中文化名，不要使用英文名；</span>
                     <span>三退不会影响您的生活、工作与学习，对您不会产生任何实质影响；</span>
                     <span>三退不是到组织内部退，是顺天意退，抹去当初加入时的一切誓言。</span>
                 </div>
@@ -887,8 +887,8 @@
 
             <!-- Form -->
             <form class="form" id="retirementForm">
-                <label for="name">三退者名称（可任意化名）</label>
-                <input type="text" id="name" name="name" required placeholder="例：德福、川普、叶凡">
+                <label for="name">三退者名字（或中文的化名）</label>
+                <input type="text" id="name" name="name" required placeholder="例：德福、川普、叶凡" pattern="^[\u4e00-\u9fa5][\u4e00-\u9fa5a-zA-Z0-9_·•\s-]*$">
 
                 <label for="application">申请内容</label>
                 <textarea type="text" id="application" rows="3" name="application" required
@@ -938,6 +938,12 @@
             const application = document.getElementById('application').value.trim();
             const remarks = document.getElementById('remarks').value.trim();
             const errorMessage = document.getElementById('error-message');
+
+            // 新增：校验名字必须以中文开头
+            if (!/^([\u4e00-\u9fa5])/.test(name)) {
+                errorMessage.textContent = "名字必须以中文字符开头。";
+                return;
+            }
 
             if (!name || !application) {
                 errorMessage.textContent = "请填写所有必填字段。";
