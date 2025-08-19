@@ -6,7 +6,7 @@ source  /home/mediacms.io/bin/activate # use virtualenv
 git pull # update code
 pip install -r requirements.txt -U # run pip install to update
 python manage.py migrate # run Django migrations
-cd /frontend
+cd frontend/
 export NODE_OPTIONS="--openssl-legacy-provider"
 npm run dist
 cd ..
