@@ -175,9 +175,9 @@ export function HeaderRight(props) {
                       hasHeaderThemeSwitcher={header.hasThemeSwitcher}
                     /> */}
 
-                    <div style={{ paddingRight: '15px' }}>
+                    {/* <div style={{ paddingRight: '15px' }}>
                       <a href='/static/app-download.html'>APP下载</a>
-                    </div>
+                    </div> */}
                     <div>
                       <a href='/'>我要三退</a>
                     </div>
