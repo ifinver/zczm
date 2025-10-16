@@ -15,5 +15,6 @@ static/debug_toolbar/
 static/mptt/
 static/rest_framework/
 static/drf-yasg
+static_back/
 cms/local_settings.py
 deploy/docker/local_settings.py
