@@ -1242,6 +1242,104 @@
                 .catch(err => console.error("Error fetching or processing nav.json", err));
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function shouldShowPopup() {
+                const lastShown = localStorage.getItem('customPopupLastShown');
+                if (!lastShown) {
+                    return true;
+                }
+                const lastShownDate = new Date(lastShown);
+                const now = new Date();
+                const diff = now - lastShownDate;
+                return diff > 7 * 24 * 60 * 60 * 1000;
+            }
+
+            function fetchPopupData() {
+                return fetch('/static/pop.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    });
+            }
+
+            function showPopup(title, content, button_text, button_link) {
+                const popupContainer = document.createElement('div');
+                popupContainer.style.position = 'fixed';
+                popupContainer.style.bottom = '0px';
+                popupContainer.style.right = '0px';
+                popupContainer.style.width = '400px';
+                popupContainer.style.backgroundColor = '#1E73BE';
+                popupContainer.style.padding = '18px';
+                popupContainer.style.paddingBottom = '54px';
+                popupContainer.style.boxSizing = 'border-box';
+                popupContainer.style.zIndex = '9999';
+                popupContainer.style.color = '#fff';
+                popupContainer.style.overflow = 'hidden';
+
+                const popupTitle = document.createElement('div');
+                popupTitle.textContent = title;
+                popupTitle.style.textAlign = 'left';
+                popupTitle.style.textShadow = '0px 0px 0px rgba(2, 2, 2, 0.23)';
+                popupTitle.style.fontFamily = 'Sans-Serif';
+                popupTitle.style.fontWeight = '100';
+                popupTitle.style.fontSize = '26px';
+                popupTitle.style.lineHeight = '28px';
+                popupTitle.style.marginBottom = '10px';
+
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = content;
+
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = 'X';
+                closeBtn.style.position = 'absolute';
+                closeBtn.style.top = '0px';
+                closeBtn.style.right = '0px';
+                closeBtn.style.width = '32px';
+                closeBtn.style.height = '24px';
+                closeBtn.style.backgroundColor = '#EEEE22';
+                closeBtn.style.border = 'none';
+                closeBtn.style.cursor = 'pointer';
+                closeBtn.style.fontSize = '16px';
+                closeBtn.style.color = '#1E73B3';
+
+                const link = document.createElement('a');
+                link.href = button_link;
+                link.textContent = button_text;
+                link.style.color = '#fff';
+                link.style.textDecoration = 'none';
+                link.style.position = 'absolute';
+                link.style.bottom = '10px';
+                link.style.left = '18px';
+
+                popupContainer.appendChild(popupTitle);
+                popupContainer.appendChild(contentDiv);
+                popupContainer.appendChild(closeBtn);
+                popupContainer.appendChild(link);
+
+                document.body.appendChild(popupContainer);
+
+                closeBtn.addEventListener('click', function () {
+                    document.body.removeChild(popupContainer);
+                });
+            }
+
+            if (shouldShowPopup()) {
+                fetchPopupData()
+                    .then(data => {
+                        if (data.enabled) {
+                            showPopup(data.title, data.content, data.button_text, data.button_link);
+                            localStorage.setItem('customPopupLastShown', new Date());
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Popup fetch error:', err);
+                    });
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,28 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% block head %}
 
-        <title>{% block headtitle %}{{PORTAL_NAME}}{% endblock headtitle %}</title>
+    <title>{% block headtitle %}{{PORTAL_NAME}}{% endblock headtitle %}</title>
 
-        {% include "common/head-meta.html" %}
+    {% include "common/head-meta.html" %}
 
-        {% block headermeta %}
-        
-        <meta property="og:title" content="{{PORTAL_NAME}}">
-        <meta property="og:type" content="website">
+    {% block headermeta %}
 
-        {%endblock headermeta %}
+    <meta property="og:title" content="{{PORTAL_NAME}}">
+    <meta property="og:type" content="website">
 
-        {% block externallinks %}{% endblock externallinks %}
+    {%endblock headermeta %}
 
-        {% include "common/head-links.html" %}
+    {% block externallinks %}{% endblock externallinks %}
 
-        {% block topimports %}{%endblock topimports %}
+    {% include "common/head-links.html" %}
 
-        {% include "config/index.html" %}
-        
+    {% block topimports %}{%endblock topimports %}
+
+    {% include "config/index.html" %}
+
     {% endblock head %}
 
 </head>
@@ -41,136 +42,136 @@
     {% if LOAD_FROM_CDN %}
     <script src="https://vjs.zencdn.net/7.20.2/video.min.js"></script>
     {% else %}
-    <script src="{% static "lib/video-js/7.20.2/video.min.js" %}"></script>
+    <script src="{% static " lib/video-js/7.20.2/video.min.js" %}"></script>
     {% endif %}
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        /**
-         * 判断是否应当弹窗
-         */
-        function shouldShowPopup() {
-        const lastShown = localStorage.getItem('customPopupLastShown');
-        if (!lastShown) {
-            return true;
-        }
-        const lastShownDate = new Date(lastShown);
-        const now = new Date();
-        const diff = now - lastShownDate;
-        // 7天毫秒数
-        return diff > 7 * 24 * 60 * 60 * 1000;
-        }
-
-        /**
-         * 从 /static/pop.json 获取弹窗内容
-         * 假设返回:
-         * {
-         *   "title": "欢迎访问本站！",
-         *   "content": "这是弹窗内容..."
-         * }
-         */
-        function fetchPopupData() {
-        return fetch('/static/pop.json')
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-            });
-        }
-
-        /**
-         * 显示右下角弹窗
-         * @param {string} title   - 标题文本
-         * @param {string} content - 主体内容(HTML)
-         */
-        function showPopup(title, content, button_text, button_link) {
-        // 创建弹窗容器：固定在浏览器右下角
-        const popupContainer = document.createElement('div');
-        popupContainer.style.position = 'fixed';
-        popupContainer.style.bottom = '0px';
-        popupContainer.style.right = '0px';
-        popupContainer.style.width = '400px';
-        popupContainer.style.backgroundColor = '#1E73BE';
-        popupContainer.style.padding = '18px';
-        popupContainer.style.paddingBottom = '54px';
-        popupContainer.style.boxSizing = 'border-box';
-        popupContainer.style.zIndex = '9999';
-        popupContainer.style.color = '#fff';
-        // 为了放置关闭按钮和底部链接，使用相对定位
-        popupContainer.style.overflow = 'hidden';
-
-        // 标题
-        const popupTitle = document.createElement('div');
-        popupTitle.textContent = title;
-        popupTitle.style.textAlign = 'left';
-        popupTitle.style.textShadow = '0px 0px 0px rgba(2, 2, 2, 0.23)';
-        popupTitle.style.fontFamily = 'Sans-Serif';
-        popupTitle.style.fontWeight = '100';
-        popupTitle.style.fontSize = '26px';
-        popupTitle.style.lineHeight = '28px';
-        popupTitle.style.marginBottom = '10px';
-
-        // 内容
-        const contentDiv = document.createElement('div');
-        // 允许解析HTML
-        contentDiv.innerHTML = content;
-
-        // 关闭按钮
-        const closeBtn = document.createElement('button');
-        closeBtn.textContent = 'X';  // 按钮文字
-        closeBtn.style.position = 'absolute';
-        closeBtn.style.top = '0px';
-        closeBtn.style.right = '0px';
-        closeBtn.style.width = '32px';
-        closeBtn.style.height = '24px';
-        closeBtn.style.backgroundColor = '#EEEE22';
-        closeBtn.style.border = 'none';
-        closeBtn.style.cursor = 'pointer';
-        closeBtn.style.fontSize = '16px';
-        closeBtn.style.color = '#1E73B3';
-
-        // 底部左侧链接【点击了解】
-        const link = document.createElement('a');
-        link.href = button_link;
-        link.textContent = button_text;
-        link.style.color = '#fff';
-        link.style.textDecoration = 'none';
-        link.style.position = 'absolute';
-        link.style.bottom = '10px';
-        link.style.left = '18px';
-
-        // 将各元素添加进容器
-        popupContainer.appendChild(popupTitle);
-        popupContainer.appendChild(contentDiv);
-        popupContainer.appendChild(closeBtn);
-        popupContainer.appendChild(link);
-
-        // 添加到body
-        document.body.appendChild(popupContainer);
-
-        // 点击关闭按钮移除弹窗
-        closeBtn.addEventListener('click', function() {
-            document.body.removeChild(popupContainer);
-        });
-        }
-
-        // 主逻辑：仅在需要弹时才弹
-        if (shouldShowPopup()) {
-        fetchPopupData()
-            .then(data => {
-                // data 例如: { "title": "标题", "content": "HTML内容..." }
-                if(data.enabled){
-                    showPopup(data.title, data.content,data.button_text, data.button_link);
-                    // 记录本次弹窗时间
-                    localStorage.setItem('customPopupLastShown', new Date());
+        document.addEventListener('DOMContentLoaded', function () {
+            /**
+             * 判断是否应当弹窗
+             */
+            function shouldShowPopup() {
+                const lastShown = localStorage.getItem('customPopupLastShown');
+                if (!lastShown) {
+                    return true;
                 }
-            })
-            .catch(err => {
-            console.error('Popup fetch error:', err);
-            });
-        }
-    });
+                const lastShownDate = new Date(lastShown);
+                const now = new Date();
+                const diff = now - lastShownDate;
+                // 7天毫秒数
+                return diff > 7 * 24 * 60 * 60 * 1000;
+            }
+
+            /**
+             * 从 /static/pop.json 获取弹窗内容
+             * 假设返回:
+             * {
+             *   "title": "欢迎访问本站！",
+             *   "content": "这是弹窗内容..."
+             * }
+             */
+            function fetchPopupData() {
+                return fetch('/static/pop.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    });
+            }
+
+            /**
+             * 显示右下角弹窗
+             * @param {string} title   - 标题文本
+             * @param {string} content - 主体内容(HTML)
+             */
+            function showPopup(title, content, button_text, button_link) {
+                // 创建弹窗容器：固定在浏览器右下角
+                const popupContainer = document.createElement('div');
+                popupContainer.style.position = 'fixed';
+                popupContainer.style.bottom = '0px';
+                popupContainer.style.right = '0px';
+                popupContainer.style.width = '400px';
+                popupContainer.style.backgroundColor = '#1E73BE';
+                popupContainer.style.padding = '18px';
+                popupContainer.style.paddingBottom = '54px';
+                popupContainer.style.boxSizing = 'border-box';
+                popupContainer.style.zIndex = '9999';
+                popupContainer.style.color = '#fff';
+                // 为了放置关闭按钮和底部链接，使用相对定位
+                popupContainer.style.overflow = 'hidden';
+
+                // 标题
+                const popupTitle = document.createElement('div');
+                popupTitle.textContent = title;
+                popupTitle.style.textAlign = 'left';
+                popupTitle.style.textShadow = '0px 0px 0px rgba(2, 2, 2, 0.23)';
+                popupTitle.style.fontFamily = 'Sans-Serif';
+                popupTitle.style.fontWeight = '100';
+                popupTitle.style.fontSize = '26px';
+                popupTitle.style.lineHeight = '28px';
+                popupTitle.style.marginBottom = '10px';
+
+                // 内容
+                const contentDiv = document.createElement('div');
+                // 允许解析HTML
+                contentDiv.innerHTML = content;
+
+                // 关闭按钮
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = 'X';  // 按钮文字
+                closeBtn.style.position = 'absolute';
+                closeBtn.style.top = '0px';
+                closeBtn.style.right = '0px';
+                closeBtn.style.width = '32px';
+                closeBtn.style.height = '24px';
+                closeBtn.style.backgroundColor = '#EEEE22';
+                closeBtn.style.border = 'none';
+                closeBtn.style.cursor = 'pointer';
+                closeBtn.style.fontSize = '16px';
+                closeBtn.style.color = '#1E73B3';
+
+                // 底部左侧链接【点击了解】
+                const link = document.createElement('a');
+                link.href = button_link;
+                link.textContent = button_text;
+                link.style.color = '#fff';
+                link.style.textDecoration = 'none';
+                link.style.position = 'absolute';
+                link.style.bottom = '10px';
+                link.style.left = '18px';
+
+                // 将各元素添加进容器
+                popupContainer.appendChild(popupTitle);
+                popupContainer.appendChild(contentDiv);
+                popupContainer.appendChild(closeBtn);
+                popupContainer.appendChild(link);
+
+                // 添加到body
+                document.body.appendChild(popupContainer);
+
+                // 点击关闭按钮移除弹窗
+                closeBtn.addEventListener('click', function () {
+                    document.body.removeChild(popupContainer);
+                });
+            }
+
+            // 主逻辑：仅在需要弹时才弹
+            if (shouldShowPopup()) {
+                fetchPopupData()
+                    .then(data => {
+                        // data 例如: { "title": "标题", "content": "HTML内容..." }
+                        if (data.enabled) {
+                            showPopup(data.title, data.content, data.button_text, data.button_link);
+                            // 记录本次弹窗时间
+                            localStorage.setItem('customPopupLastShown', new Date());
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Popup fetch error:', err);
+                    });
+            }
+        });
     </script>
 
     {% block externalscripts %}{% endblock externalscripts %}
