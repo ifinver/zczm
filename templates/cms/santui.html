@@ -1245,14 +1245,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             function shouldShowPopup() {
-                const lastShown = localStorage.getItem('customPopupLastShown');
-                if (!lastShown) {
-                    return true;
-                }
-                const lastShownDate = new Date(lastShown);
-                const now = new Date();
-                const diff = now - lastShownDate;
-                return diff > 7 * 24 * 60 * 60 * 1000;
+                return true;
             }
 
             function fetchPopupData() {
@@ -1331,7 +1324,6 @@
                     .then(data => {
                         if (data.enabled) {
                             showPopup(data.title, data.content, data.button_text, data.button_link);
-                            localStorage.setItem('customPopupLastShown', new Date());
                         }
                     })
                     .catch(err => {

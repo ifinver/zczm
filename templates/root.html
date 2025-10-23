@@ -51,15 +51,7 @@
              * 判断是否应当弹窗
              */
             function shouldShowPopup() {
-                const lastShown = localStorage.getItem('customPopupLastShown');
-                if (!lastShown) {
-                    return true;
-                }
-                const lastShownDate = new Date(lastShown);
-                const now = new Date();
-                const diff = now - lastShownDate;
-                // 7天毫秒数
-                return diff > 7 * 24 * 60 * 60 * 1000;
+                return true;
             }
 
             /**
@@ -163,8 +155,6 @@
                         // data 例如: { "title": "标题", "content": "HTML内容..." }
                         if (data.enabled) {
                             showPopup(data.title, data.content, data.button_text, data.button_link);
-                            // 记录本次弹窗时间
-                            localStorage.setItem('customPopupLastShown', new Date());
                         }
                     })
                     .catch(err => {
