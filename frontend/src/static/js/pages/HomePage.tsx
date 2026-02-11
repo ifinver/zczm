@@ -75,7 +75,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   // Fetch navigation data
   useEffect(() => {
-    fetch('/static/nav.json')
+    fetch(`/static/nav.json?version=${Math.random()}`)
       .then((response) => response.json())
       .then((data) => setNavItems(data));
   }, []);

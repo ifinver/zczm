@@ -63,7 +63,7 @@
              * }
              */
             function fetchPopupData() {
-                return fetch('/static/pop.json')
+                return fetch(`/static/pop.json?version=${Math.random()}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok: ' + response.statusText);

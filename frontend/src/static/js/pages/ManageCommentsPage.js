@@ -129,7 +129,14 @@ function JsonEditor({ data, onChange, path = [] }) {
     return null;
   }
   return (
-    <div>
+    <div
+      style={{
+        marginLeft: '20px',
+        border: '1px dashed #aaa',
+        padding: '10px',
+        marginBottom: '10px',
+      }}
+    >
       {Object.entries(data).map(([key, val]) => {
         const currentPath = [...path, key];
         // 若值为对象（且非数组），递归调用 JsonEditor

@@ -1208,7 +1208,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            fetch('/static/nav.json')
+            fetch(`/static/nav.json?version=${Math.random()}`)
                 .then(response => response.json())
                 .then(data => {
                     const swiperWrapper = document.querySelector('#nav-swiper .swiper-wrapper');
@@ -1249,7 +1249,7 @@
             }
 
             function fetchPopupData() {
-                return fetch('/static/pop.json')
+                return fetch(`/static/pop.json?version=${Math.random()}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok: ' + response.statusText);
