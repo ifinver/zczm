@@ -1258,7 +1258,7 @@
                     });
             }
 
-            function showPopup(title, content, button_text, button_link) {
+            function showPopup(title, content, button_text, button_link, contact) {
                 const popupContainer = document.createElement('div');
                 popupContainer.style.position = 'fixed';
                 popupContainer.style.bottom = '0px';
@@ -1307,10 +1307,22 @@
                 link.style.bottom = '10px';
                 link.style.left = '18px';
 
+                // 底部右侧【联系方式】
+                const contactDiv = document.createElement('div');
+                contactDiv.textContent = contact;
+                contactDiv.style.color = '#fff';
+                contactDiv.style.textDecoration = 'none';
+                contactDiv.style.position = 'absolute';
+                contactDiv.style.bottom = '10px';
+                contactDiv.style.right = '10px';
+
                 popupContainer.appendChild(popupTitle);
                 popupContainer.appendChild(contentDiv);
                 popupContainer.appendChild(closeBtn);
                 popupContainer.appendChild(link);
+                if (contact) {
+                    popupContainer.appendChild(contactDiv);
+                }
 
                 document.body.appendChild(popupContainer);
 
@@ -1323,7 +1335,7 @@
                 fetchPopupData()
                     .then(data => {
                         if (data.enabled) {
-                            showPopup(data.title, data.content, data.button_text, data.button_link);
+                            showPopup(data.title, data.content, data.button_text, data.button_link, data.contact);
                         }
                     })
                     .catch(err => {
