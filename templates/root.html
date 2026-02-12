@@ -77,7 +77,7 @@
              * @param {string} title   - 标题文本
              * @param {string} content - 主体内容(HTML)
              */
-            function showPopup(title, content, button_text, button_link, contact) {
+            function showPopup(title, content, button_text, button_link, contact_text, contact_link) {
                 // 创建弹窗容器：固定在浏览器右下角
                 const popupContainer = document.createElement('div');
                 popupContainer.style.position = 'fixed';
@@ -134,21 +134,22 @@
                 link.style.left = '18px';
 
                 // 底部右侧【联系方式】
-                const contactDiv = document.createElement('div');
-                contactDiv.textContent = contact;
-                contactDiv.style.color = '#fff';
-                contactDiv.style.textDecoration = 'none';
-                contactDiv.style.position = 'absolute';
-                contactDiv.style.bottom = '10px';
-                contactDiv.style.right = '10px';
+                const contactATag = document.createElement('a');
+                contactATag.textContent = contact_text;
+                contactATag.href = contact_link || 'javascript:void(0)';
+                contactATag.style.color = '#fff';
+                contactATag.style.textDecoration = 'none';
+                contactATag.style.position = 'absolute';
+                contactATag.style.bottom = '10px';
+                contactATag.style.right = '10px';
 
                 // 将各元素添加进容器
                 popupContainer.appendChild(popupTitle);
                 popupContainer.appendChild(contentDiv);
                 popupContainer.appendChild(closeBtn);
                 popupContainer.appendChild(link);
-                if (contact) {
-                    popupContainer.appendChild(contactDiv);
+                if (contact_text) {
+                    popupContainer.appendChild(contactATag);
                 }
 
                 // 添加到body
@@ -166,7 +167,7 @@
                     .then(data => {
                         // data 例如: { "title": "标题", "content": "HTML内容..." }
                         if (data.enabled) {
-                            showPopup(data.title, data.content, data.button_text, data.button_link, data.contact);
+                            showPopup(data.title, data.content, data.button_text, data.button_link, data.contact_text, data.contact_link);
                         }
                     })
                     .catch(err => {
