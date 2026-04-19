@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1250,6 +1251,223 @@
         });
     </script>
     <script>
+        window.QR_GUIDE_ALBUM_SRCS = [
+            "{% static 'images/qr-guide/url-qr.png' %}",
+            "{% static 'images/qr-guide/android.jpg' %}",
+            "{% static 'images/qr-guide/ios.jpg' %}"
+        ];
+
+        function openQrGuideAlbum(startIndex) {
+            var srcs = window.QR_GUIDE_ALBUM_SRCS;
+            if (!srcs || !srcs.length) return;
+
+            var idx = Math.max(0, Math.min(Number(startIndex) || 0, srcs.length - 1));
+            var scale = 1;
+            var tx = 0;
+            var ty = 0;
+            var dragging = false;
+            var dragStart = { x: 0, y: 0, tx: 0, ty: 0 };
+            var touchSwipeStart = null;
+            var lastPanTouch = null;
+
+            var prevOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.88);display:flex;flex-direction:column;font-family:sans-serif;';
+
+            function mkBtn(label, title) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.textContent = label;
+                b.title = title || '';
+                b.style.cssText = 'min-width:36px;height:36px;border:none;border-radius:4px;background:rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;line-height:1;';
+                b.onmouseenter = function () { b.style.background = 'rgba(255,255,255,.28)'; };
+                b.onmouseleave = function () { b.style.background = 'rgba(255,255,255,.15)'; };
+                return b;
+            }
+
+            var zoomOut = mkBtn('−', '缩小');
+            var zoomIn = mkBtn('+', '放大');
+            var resetBtn = mkBtn('1:1', '重置缩放');
+            var closeBtnAlbum = mkBtn('×', '关闭');
+            closeBtnAlbum.style.fontSize = '22px';
+
+            var toolbar = document.createElement('div');
+            toolbar.style.cssText = 'display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:12px 16px;flex-shrink:0;';
+
+            var stage = document.createElement('div');
+            stage.style.cssText = 'flex:1;position:relative;overflow:hidden;touch-action:none;';
+
+            var prevArrow = document.createElement('button');
+            prevArrow.type = 'button';
+            prevArrow.innerHTML = '‹';
+            prevArrow.title = '上一张';
+            prevArrow.setAttribute('aria-label', '上一张');
+            prevArrow.style.cssText = 'position:absolute;left:8px;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border:none;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:28px;line-height:1;cursor:pointer;';
+
+            var nextArrow = document.createElement('button');
+            nextArrow.type = 'button';
+            nextArrow.innerHTML = '›';
+            nextArrow.title = '下一张';
+            nextArrow.setAttribute('aria-label', '下一张');
+            nextArrow.style.cssText = 'position:absolute;right:8px;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border:none;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:28px;line-height:1;cursor:pointer;';
+
+            var imgWrap = document.createElement('div');
+            imgWrap.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;';
+
+            var img = document.createElement('img');
+            img.style.cssText = 'max-width:90vw;max-height:85vh;object-fit:contain;user-select:none;-webkit-user-drag:none;';
+            img.draggable = false;
+
+            function applyTransform() {
+                img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+            }
+
+            function resetView() {
+                scale = 1;
+                tx = 0;
+                ty = 0;
+                touchSwipeStart = null;
+                lastPanTouch = null;
+                applyTransform();
+            }
+
+            function showCurrent() {
+                resetView();
+                img.src = srcs[idx];
+                img.alt = '图片 ' + (idx + 1) + ' / ' + srcs.length;
+            }
+
+            function closeAlbum() {
+                document.body.style.overflow = prevOverflow;
+                if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                document.removeEventListener('keydown', onKey);
+                window.removeEventListener('mouseup', endDrag);
+            }
+
+            function onKey(e) {
+                if (e.key === 'Escape') closeAlbum();
+                if (e.key === 'ArrowLeft') goPrev();
+                if (e.key === 'ArrowRight') goNext();
+                if (e.key === '+' || e.key === '=') doZoom(0.25);
+                if (e.key === '-' || e.key === '_') doZoom(-0.25);
+            }
+
+            function goPrev() {
+                idx = (idx - 1 + srcs.length) % srcs.length;
+                showCurrent();
+            }
+
+            function goNext() {
+                idx = (idx + 1) % srcs.length;
+                showCurrent();
+            }
+
+            function doZoom(delta) {
+                scale = Math.min(5, Math.max(0.25, scale + delta));
+                applyTransform();
+            }
+
+            function endDrag() {
+                dragging = false;
+            }
+
+            zoomIn.addEventListener('click', function () { doZoom(0.25); });
+            zoomOut.addEventListener('click', function () { doZoom(-0.25); });
+            resetBtn.addEventListener('click', resetView);
+            closeBtnAlbum.addEventListener('click', closeAlbum);
+            prevArrow.addEventListener('click', function (e) { e.stopPropagation(); goPrev(); });
+            nextArrow.addEventListener('click', function (e) { e.stopPropagation(); goNext(); });
+
+            img.addEventListener('wheel', function (e) {
+                e.preventDefault();
+                var d = e.deltaY > 0 ? -0.12 : 0.12;
+                doZoom(d);
+            }, { passive: false });
+
+            img.addEventListener('dblclick', function (e) {
+                e.preventDefault();
+                resetView();
+            });
+
+            stage.addEventListener('mousedown', function (e) {
+                if (scale <= 1) return;
+                if (e.button !== 0) return;
+                dragging = true;
+                dragStart = { x: e.clientX, y: e.clientY, tx: tx, ty: ty };
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', function (e) {
+                if (!dragging) return;
+                tx = dragStart.tx + (e.clientX - dragStart.x);
+                ty = dragStart.ty + (e.clientY - dragStart.y);
+                applyTransform();
+            });
+
+            window.addEventListener('mouseup', endDrag);
+
+            stage.addEventListener('touchstart', function (e) {
+                if (e.touches.length !== 1) return;
+                var t = e.touches[0];
+                touchSwipeStart = { x: t.clientX, y: t.clientY };
+                if (scale > 1) {
+                    lastPanTouch = { x: t.clientX, y: t.clientY };
+                }
+            }, { passive: true });
+
+            stage.addEventListener('touchmove', function (e) {
+                if (scale <= 1 || e.touches.length !== 1 || !lastPanTouch) return;
+                e.preventDefault();
+                var t = e.touches[0];
+                tx += t.clientX - lastPanTouch.x;
+                ty += t.clientY - lastPanTouch.y;
+                lastPanTouch = { x: t.clientX, y: t.clientY };
+                applyTransform();
+            }, { passive: false });
+
+            stage.addEventListener('touchend', function (e) {
+                if (scale > 1) {
+                    touchSwipeStart = null;
+                    lastPanTouch = null;
+                    return;
+                }
+                if (!touchSwipeStart) return;
+                var t = e.changedTouches[0];
+                var dx = t.clientX - touchSwipeStart.x;
+                var dy = t.clientY - touchSwipeStart.y;
+                touchSwipeStart = null;
+                if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+                    if (dx > 0) goPrev();
+                    else goNext();
+                }
+            }, { passive: true });
+
+            img.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+
+            stage.addEventListener('click', function (e) {
+                if (e.target === stage || e.target === imgWrap) closeAlbum();
+            });
+
+            toolbar.appendChild(zoomOut);
+            toolbar.appendChild(zoomIn);
+            toolbar.appendChild(resetBtn);
+            toolbar.appendChild(closeBtnAlbum);
+            imgWrap.appendChild(img);
+            stage.appendChild(imgWrap);
+            stage.appendChild(prevArrow);
+            stage.appendChild(nextArrow);
+            overlay.appendChild(toolbar);
+            overlay.appendChild(stage);
+
+            document.body.appendChild(overlay);
+            document.addEventListener('keydown', onKey);
+            showCurrent();
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             function shouldShowPopup() {
                 return true;
@@ -1273,7 +1491,7 @@
                 popupContainer.style.width = '400px';
                 popupContainer.style.backgroundColor = '#1E73BE';
                 popupContainer.style.padding = '18px';
-                popupContainer.style.paddingBottom = '54px';
+                popupContainer.style.paddingBottom = '130px';
                 popupContainer.style.boxSizing = 'border-box';
                 popupContainer.style.zIndex = '9999';
                 popupContainer.style.color = '#fff';
@@ -1291,6 +1509,45 @@
 
                 const contentDiv = document.createElement('div');
                 contentDiv.innerHTML = content;
+
+                const qrFooter = document.createElement('div');
+                qrFooter.style.marginTop = '12px';
+                qrFooter.style.paddingTop = '14px';
+                qrFooter.style.borderTop = '1px solid rgba(255,255,255,0.55)';
+                qrFooter.style.fontSize = '14px';
+                qrFooter.style.lineHeight = '1.45';
+                qrFooter.style.color = '#fff';
+
+                const qrRow = document.createElement('div');
+                qrRow.style.display = 'flex';
+                qrRow.style.alignItems = 'center';
+                qrRow.style.flexWrap = 'wrap';
+                qrRow.style.gap = '10px';
+
+                const qrLabel = document.createElement('span');
+                qrLabel.textContent = '请下载二维码，以防失联：';
+
+                const qrThumb = document.createElement('img');
+                qrThumb.src = (window.QR_GUIDE_ALBUM_SRCS && window.QR_GUIDE_ALBUM_SRCS[0]) || '';
+                qrThumb.alt = '网站网址二维码';
+                qrThumb.width = 56;
+                qrThumb.height = 56;
+                qrThumb.style.cursor = 'zoom-in';
+                qrThumb.style.borderRadius = '4px';
+                qrThumb.style.background = '#fff';
+                qrThumb.style.objectFit = 'contain';
+                qrThumb.style.boxSizing = 'border-box';
+                qrThumb.style.padding = '2px';
+                qrThumb.style.verticalAlign = 'middle';
+                qrThumb.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openQrGuideAlbum(0);
+                });
+
+                qrRow.appendChild(qrLabel);
+                qrRow.appendChild(qrThumb);
+                qrFooter.appendChild(qrRow);
 
                 const closeBtn = document.createElement('button');
                 closeBtn.textContent = 'X';
@@ -1326,6 +1583,7 @@
 
                 popupContainer.appendChild(popupTitle);
                 popupContainer.appendChild(contentDiv);
+                popupContainer.appendChild(qrFooter);
                 popupContainer.appendChild(closeBtn);
                 popupContainer.appendChild(link);
                 if (contact_text) {
