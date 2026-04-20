@@ -381,11 +381,11 @@
                 const qrRow = document.createElement('div');
                 qrRow.style.display = 'flex';
                 qrRow.style.alignItems = 'center';
-                qrRow.style.flexWrap = 'wrap';
+                // qrRow.style.flexWrap = 'wrap';
                 qrRow.style.gap = '10px';
 
                 const qrLabel = document.createElement('span');
-                qrLabel.textContent = '请下载二维码，以防失联：';
+                qrLabel.textContent = '长效二维码，如果干扰打不开请隔几个小时后再开启。具体步骤见图片教程。';
 
                 const qrThumb = document.createElement('img');
                 qrThumb.src = (window.QR_GUIDE_ALBUM_SRCS && window.QR_GUIDE_ALBUM_SRCS[0]) || '';
@@ -409,6 +409,8 @@
                 qrDownloadLink.href = '#';
                 qrDownloadLink.textContent = '下载';
                 qrDownloadLink.title = '下载网站二维码图片';
+                qrDownloadLink.style.width = '2em';
+                qrDownloadLink.style.flex = 'none';
                 qrDownloadLink.style.color = 'rgba(255,255,255,0.68)';
                 qrDownloadLink.style.textDecoration = 'underline';
                 qrDownloadLink.style.fontSize = '14px';
