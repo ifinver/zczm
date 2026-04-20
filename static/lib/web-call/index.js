@@ -9,11 +9,11 @@ callButton.style.bottom = '20px';
 callButton.style.right = '20px';
 document.body.appendChild(callButton);
 
-setTimeout(() => {
+window.onload = () => {
   window.EmbeddedCallWidget.createCallButton({
     mount: '#call-button',
     apiBaseUrl: `https://${location.host}/proxy.shenyin.eu/proxy/`,
     siteKey: 'friendly-site-demo',
     text: '值班员',
   });
-}, 1500);
+}
