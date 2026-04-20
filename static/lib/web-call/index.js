@@ -5,7 +5,7 @@ document.head.appendChild(sdkScript);
 const callButton = document.createElement('div');
 callButton.id = 'call-button';
 callButton.style.position = 'fixed';
-callButton.style.bottom = '20px';
+callButton.style.bottom = '40px';
 callButton.style.right = '20px';
 document.body.appendChild(callButton);
 
