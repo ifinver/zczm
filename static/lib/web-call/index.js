@@ -5,15 +5,17 @@ document.head.appendChild(sdkScript);
 const callButton = document.createElement('div');
 callButton.id = 'call-button';
 callButton.style.position = 'fixed';
-callButton.style.bottom = '40px';
-callButton.style.right = '20px';
+callButton.style.bottom = '140px';
+callButton.style.right = '9px';
 document.body.appendChild(callButton);
 
 window.onload = () => {
-  window.EmbeddedCallWidget.createCallButton({
-    mount: '#call-button',
-    apiBaseUrl: `https://${location.host}/proxy.shenyin.eu/proxy/`,
-    siteKey: 'friendly-site-demo',
-    text: '值班员',
-  });
+  setTimeout(() => {
+    window.EmbeddedCallWidget.createCallButton({
+      mount: '#call-button',
+      apiBaseUrl: `https://${location.host}/proxy.shenyin.eu/proxy/`,
+      siteKey: 'friendly-site-demo',
+      text: '值班员',
+    });
+  }, 3000);
 }
