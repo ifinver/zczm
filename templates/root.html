@@ -372,61 +372,71 @@
                 // 允许解析HTML
                 contentDiv.innerHTML = content;
 
-                const qrFooter = document.createElement('div');
-                qrFooter.style.marginTop = '12px';
-                qrFooter.style.paddingTop = '14px';
-                qrFooter.style.borderTop = '1px solid rgba(255,255,255,0.55)';
-                qrFooter.style.fontSize = '14px';
-                qrFooter.style.lineHeight = '1.45';
-                qrFooter.style.color = '#fff';
+                // const qrFooter = document.createElement('div');
+                // qrFooter.style.marginTop = '12px';
+                // qrFooter.style.paddingTop = '14px';
+                // qrFooter.style.borderTop = '1px solid rgba(255,255,255,0.55)';
+                // qrFooter.style.fontSize = '14px';
+                // qrFooter.style.lineHeight = '1.45';
+                // qrFooter.style.color = '#fff';
 
-                const qrRow = document.createElement('div');
-                qrRow.style.display = 'flex';
-                qrRow.style.alignItems = 'center';
-                // qrRow.style.flexWrap = 'wrap';
-                qrRow.style.gap = '10px';
+                // const qrRow = document.createElement('div');
+                // qrRow.style.display = 'flex';
+                // qrRow.style.alignItems = 'center';
+                // // qrRow.style.flexWrap = 'wrap';
+                // qrRow.style.gap = '10px';
 
-                const qrLabel = document.createElement('span');
-                qrLabel.textContent = '长效二维码，如果干扰打不开请隔几个小时后再开启。具体步骤见图片教程。';
+                // const qrLabel = document.createElement('span');
+                // qrLabel.textContent = '长效二维码，如果干扰打不开请隔几个小时后再开启。具体步骤见图片教程。';
 
-                const qrThumb = document.createElement('img');
-                qrThumb.src = (window.QR_GUIDE_ALBUM_SRCS && window.QR_GUIDE_ALBUM_SRCS[0]) || '';
-                qrThumb.alt = '网站网址二维码';
-                qrThumb.width = 56;
-                qrThumb.height = 56;
-                qrThumb.style.cursor = 'zoom-in';
-                qrThumb.style.borderRadius = '4px';
-                qrThumb.style.background = '#fff';
-                qrThumb.style.objectFit = 'contain';
-                qrThumb.style.boxSizing = 'border-box';
-                qrThumb.style.padding = '2px';
-                qrThumb.style.verticalAlign = 'middle';
-                qrThumb.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openQrGuideAlbum(0);
-                });
+                // const qrThumb = document.createElement('img');
+                // qrThumb.src = (window.QR_GUIDE_ALBUM_SRCS && window.QR_GUIDE_ALBUM_SRCS[0]) || '';
+                // qrThumb.alt = '网站网址二维码';
+                // qrThumb.width = 56;
+                // qrThumb.height = 56;
+                // qrThumb.style.cursor = 'zoom-in';
+                // qrThumb.style.borderRadius = '4px';
+                // qrThumb.style.background = '#fff';
+                // qrThumb.style.objectFit = 'contain';
+                // qrThumb.style.boxSizing = 'border-box';
+                // qrThumb.style.padding = '2px';
+                // qrThumb.style.verticalAlign = 'middle';
+                // qrThumb.addEventListener('click', function (e) {
+                //     e.preventDefault();
+                //     e.stopPropagation();
+                //     openQrGuideAlbum(0);
+                // });
 
-                const qrDownloadLink = document.createElement('a');
-                qrDownloadLink.href = '#';
-                qrDownloadLink.textContent = '下载';
-                qrDownloadLink.title = '下载网站二维码图片';
-                qrDownloadLink.style.width = '2em';
-                qrDownloadLink.style.flex = 'none';
-                qrDownloadLink.style.color = 'rgba(255,255,255,0.68)';
-                qrDownloadLink.style.textDecoration = 'underline';
-                qrDownloadLink.style.fontSize = '14px';
-                qrDownloadLink.style.cursor = 'pointer';
-                qrDownloadLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    downloadQrGuideImageByIndex(0);
-                });
+                // const qrDownloadLink = document.createElement('a');
+                // qrDownloadLink.href = '#';
+                // qrDownloadLink.textContent = '下载';
+                // qrDownloadLink.title = '下载网站二维码图片';
+                // qrDownloadLink.style.width = '2em';
+                // qrDownloadLink.style.flex = 'none';
+                // qrDownloadLink.style.color = 'rgba(255,255,255,0.68)';
+                // qrDownloadLink.style.textDecoration = 'underline';
+                // qrDownloadLink.style.fontSize = '14px';
+                // qrDownloadLink.style.cursor = 'pointer';
+                // qrDownloadLink.addEventListener('click', function (e) {
+                //     e.preventDefault();
+                //     e.stopPropagation();
+                //     downloadQrGuideImageByIndex(0);
+                // });
 
-                qrRow.appendChild(qrLabel);
-                qrRow.appendChild(qrThumb);
-                qrRow.appendChild(qrDownloadLink);
-                qrFooter.appendChild(qrRow);
+                // qrRow.appendChild(qrLabel);
+                // qrRow.appendChild(qrThumb);
+                // qrRow.appendChild(qrDownloadLink);
+                // qrFooter.appendChild(qrRow);
+                const appLink = document.createElement('a');
+                appLink.href = '/static/app-download.html';
+                appLink.textContent = '下载APP';
+                appLink.title = '下载APP';
+                appLink.style.color = '#fff';
+                appLink.style.textDecoration = 'underline';
+                appLink.style.position = 'absolute';
+                appLink.style.bottom = '10px';
+                appLink.style.right = '10px';
+                
 
                 // 关闭按钮
                 const closeBtn = document.createElement('button');
@@ -465,7 +475,8 @@
                 // 将各元素添加进容器
                 popupContainer.appendChild(popupTitle);
                 popupContainer.appendChild(contentDiv);
-                popupContainer.appendChild(qrFooter);
+                // popupContainer.appendChild(qrFooter);
+                popupContainer.appendChild(appLink);
                 popupContainer.appendChild(closeBtn);
                 popupContainer.appendChild(link);
                 if (contact_text) {

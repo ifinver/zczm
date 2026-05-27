@@ -123,6 +123,7 @@
   <div class="download-buttons">
     <a href="/static/zczm-v2.0.1.apk">下载 Android 版本</a>
     <a href="/static/zczm-v2.0.2.zip">下载 Windows 电脑版</a>
+    <a href="#qr-guide" onclick="downloadQr">下载 长效二维码</a>
     <!-- <br/> -->
     <!-- <a href="/static/AITD-2.mobileconfig">下载 iOS 版本</a> -->
      <!-- iOS 版本敬请期待 -->
@@ -145,6 +146,56 @@
       <img src="/static/images/windows1.jpeg" alt="安装步骤1">
       <img src="/static/images/windows2.jpeg" alt="安装步骤2">
     </div>
+    <h2 id="qr-guide">长效二维码使用教程</h2>
+    <div class="tutorial-images">
+      <img src="/static/qr-guide/url-qr.png" alt="众创之门二维码">
+      <img src="/static/qr-guide/android1.jpg" alt="安卓打开方法">
+      <img src="/static/qr-guide/ios1.jpg" alt="苹果打开方法">
+    </div>
   </div>
+  <script>
+    window.QR_GUIDE_ALBUM_SRCS = [
+        "{% static 'images/qr-guide/url-qr.png' %}",
+        "{% static 'images/qr-guide/android1.jpg' %}",
+        "{% static 'images/qr-guide/ios1.jpg' %}"
+    ];
+    /** 与 QR_GUIDE_ALBUM_SRCS 顺序一一对应：url-qr / android / ios */
+    window.QR_GUIDE_DOWNLOAD_NAMES = [
+        '众创之门二维码.png',
+        '安卓打开方法.jpg',
+        '苹果打开方法.jpg'
+    ];
+
+    function downloadQrGuideImageByIndex(index) {
+        var srcs = window.QR_GUIDE_ALBUM_SRCS;
+        var names = window.QR_GUIDE_DOWNLOAD_NAMES;
+        if (!srcs || !names || index < 0 || index >= srcs.length) return;
+        var url = srcs[index];
+        var filename = names[index];
+        fetch(url)
+            .then(function (r) {
+                if (!r.ok) throw new Error(r.statusText);
+                return r.blob();
+            })
+            .then(function (blob) {
+                var u = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = u;
+                a.download = filename;
+                a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(u);
+            })
+            .catch(function (err) {
+                console.error('QR guide download failed:', err);
+            });
+    }
+    function downloadQr(e) {
+      e.stopPropagation();
+      downloadQrGuideImageByIndex(0);
+    }
+  </script>
 </body>
 </html>
