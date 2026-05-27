@@ -148,9 +148,9 @@
     </div>
     <h2 id="qr-guide">长效二维码使用教程</h2>
     <div class="tutorial-images">
-      <img src="/static/qr-guide/url-qr.png" alt="众创之门二维码">
-      <img src="/static/qr-guide/android1.jpg" alt="安卓打开方法">
-      <img src="/static/qr-guide/ios1.jpg" alt="苹果打开方法">
+      <img src="/static/images/qr-guide/url-qr.png" alt="众创之门二维码">
+      <img src="/static/images/qr-guide/android1.jpg" alt="安卓打开方法">
+      <img src="/static/images/qr-guide/ios1.jpg" alt="苹果打开方法">
     </div>
   </div>
   <script>
@@ -193,6 +193,7 @@
             });
     }
     function downloadQr(e) {
+      e.preventDefault();
       e.stopPropagation();
       downloadQrGuideImageByIndex(0);
     }
