@@ -123,7 +123,7 @@
   <div class="download-buttons">
     <a href="/static/zczm-v2.0.1.apk">下载 Android 版本</a>
     <a href="/static/zczm-v2.0.2.zip">下载 Windows 电脑版</a>
-    <a href="#qr-guide" onclick="downloadQr">下载 长效二维码</a>
+    <span onclick="downloadQr">下载 长效二维码</span>
     <!-- <br/> -->
     <!-- <a href="/static/AITD-2.mobileconfig">下载 iOS 版本</a> -->
      <!-- iOS 版本敬请期待 -->
@@ -196,6 +196,12 @@
       e.preventDefault();
       e.stopPropagation();
       downloadQrGuideImageByIndex(0);
+      
+      const appLink = document.createElement('a');
+      appLink.href = '#qr-guide';
+      appLink.textContent = '下载 长效二维码';
+      appLink.click();
+      appLink.remove();
     }
   </script>
 </body>
