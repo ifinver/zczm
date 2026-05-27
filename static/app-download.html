@@ -123,7 +123,7 @@
   <div class="download-buttons">
     <a href="/static/zczm-v2.0.1.apk">下载 Android 版本</a>
     <a href="/static/zczm-v2.0.2.zip">下载 Windows 电脑版</a>
-    <span onclick="e => downloadQr(e)">下载 长效二维码</span>
+    <span onclick="downloadQr">下载 长效二维码</span>
     <!-- <br/> -->
     <!-- <a href="/static/AITD-2.mobileconfig">下载 iOS 版本</a> -->
      <!-- iOS 版本敬请期待 -->
@@ -153,58 +153,5 @@
       <img src="/static/images/qr-guide/ios1.jpg" alt="苹果打开方法">
     </div>
   </div>
-  <script>
-    window.QR_GUIDE_ALBUM_SRCS = [
-        "/static/images/qr-guide/url-qr.png",
-        "/static/images/qr-guide/android1.jpg",
-        "/static/images/qr-guide/ios1.jpg"
-    ];
-    /** 与 QR_GUIDE_ALBUM_SRCS 顺序一一对应：url-qr / android / ios */
-    window.QR_GUIDE_DOWNLOAD_NAMES = [
-        '众创之门二维码.png',
-        '安卓打开方法.jpg',
-        '苹果打开方法.jpg'
-    ];
-
-    function downloadQrGuideImageByIndex(index) {
-        var srcs = window.QR_GUIDE_ALBUM_SRCS;
-        var names = window.QR_GUIDE_DOWNLOAD_NAMES;
-        if (!srcs || !names || index < 0 || index >= srcs.length) return;
-        var url = srcs[index];
-        var filename = names[index];
-        fetch(url)
-            .then(function (r) {
-                if (!r.ok) throw new Error(r.statusText);
-                return r.blob();
-            })
-            .then(function (blob) {
-                var u = URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = u;
-                a.download = filename;
-                a.rel = 'noopener';
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(u);
-            })
-            .catch(function (err) {
-                console.error('QR guide download failed:', err);
-            });
-    }
-    function downloadQr(e) {
-      e?.preventDefault();
-      e?.stopPropagation();
-      downloadQrGuideImageByIndex(0);
-
-      const appLink = document.createElement('a');
-      appLink.href = '#qr-guide';
-      appLink.textContent = '下载 长效二维码';
-      appLink.style.display = 'none';
-      document.body.appendChild(appLink);
-      appLink.click();
-      appLink.remove();
-    }
-  </script>
 </body>
 </html>

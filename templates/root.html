@@ -87,6 +87,20 @@
                 });
         }
 
+        function downloadQr(e) {
+            e?.preventDefault();
+            e?.stopPropagation();
+            downloadQrGuideImageByIndex(0);
+
+            const appLink = document.createElement('a');
+            appLink.href = '#qr-guide';
+            appLink.textContent = '下载 长效二维码';
+            appLink.style.display = 'none';
+            document.body.appendChild(appLink);
+            appLink.click();
+            appLink.remove();
+        }
+
         function openQrGuideAlbum(startIndex) {
             var srcs = window.QR_GUIDE_ALBUM_SRCS;
             if (!srcs || !srcs.length) return;
