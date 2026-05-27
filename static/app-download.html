@@ -155,9 +155,9 @@
   </div>
   <script>
     window.QR_GUIDE_ALBUM_SRCS = [
-        "{% static 'images/qr-guide/url-qr.png' %}",
-        "{% static 'images/qr-guide/android1.jpg' %}",
-        "{% static 'images/qr-guide/ios1.jpg' %}"
+        "/static/images/qr-guide/url-qr.png",
+        "/static/images/qr-guide/android1.jpg",
+        "/static/images/qr-guide/ios1.jpg"
     ];
     /** 与 QR_GUIDE_ALBUM_SRCS 顺序一一对应：url-qr / android / ios */
     window.QR_GUIDE_DOWNLOAD_NAMES = [
@@ -193,8 +193,8 @@
             });
     }
     function downloadQr(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      e?.preventDefault();
+      e?.stopPropagation();
       downloadQrGuideImageByIndex(0);
 
       const appLink = document.createElement('a');
