@@ -16,6 +16,7 @@ cd frontend/
 export NODE_OPTIONS="--openssl-legacy-provider"
 npm run dist
 cd ..
+cp -r frontend/dist/static/* static/
 sudo systemctl restart mediacms celery_long celery_short 
 sudo chmod 777 /home/mediacms.io/mediacms/static/pop.json
 
